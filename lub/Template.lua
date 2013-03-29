@@ -3,13 +3,13 @@
   # Simple templating
 
   Simplistic templating system inspired by Zed A. Shaw's
-  minimal template for Tir (http://mongrel2.org/).
+  minimal template for [Tir](http://mongrel2.org/).
 
   Template features:
 
-  + `{{ code }}`       Replaced with the string provided by 'code'.
-  + `{% code %}`       Execute code but do not output (used for loops, if, etc).
-  + `{| code |}`       Output code and preserve indentation.
+  + `{{ code }}`  :    Replaced with the string provided by 'code'.
+  + `{% code %}`  :    Execute code but do not output (used for loops, if, etc).
+  + `{| code |}`  :    Output code and preserve indentation.
 
   Usage:
 
