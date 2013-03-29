@@ -459,6 +459,7 @@ end
 
 -- # Classes
 --
--- WARN: We are currently migrating content from [lk](lk.html) module.
+-- WARN: We are currently migrating content from [lk](lk.html) module. Not all
+-- classes have been migrated and documented.
 
 return lib
