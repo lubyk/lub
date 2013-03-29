@@ -458,5 +458,7 @@ function private.makePathPart(path, fullpath)
 end
 
 -- # Classes
+--
+-- WARN: We are currently migrating content from [lk](lk.html) module.
 
 return lib
