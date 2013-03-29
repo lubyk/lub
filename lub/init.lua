@@ -106,7 +106,7 @@ end
 
 -- # Filesystem
 
--- Test for file/directory existence at @path@. If the element exists, returns
+-- Test for file/directory existence at `path`. If the element exists, returns
 -- the file type such as *'directory'* or *'file'*. Returns nil if there is
 -- nothing at the given path.
 function lib.fileType(path)
@@ -115,13 +115,13 @@ function lib.fileType(path)
   return attrs and attrs.mode
 end
 
--- Return true if the file or folder pointed by @path@ exists.
+-- Return true if the file or folder pointed by `path` exists.
 -- function lib.exist(path)
 lib.exist = lib.fileType
 
 -- Return the content of a file as a lua string (not suitable for very long
 -- content where parsing the file chunks by chunks is better). The method
--- accepts either a single @path@ argument or a @basepath@ and relative @path@.
+-- accepts either a single `path` argument or a `basepath` and relative `path`.
 function lib.content(basepath, path)
   if path then
     path = string.format('%s/%s', basepath, path)
@@ -134,8 +134,8 @@ function lib.content(basepath, path)
   return s
 end
 
--- Write @data@ to @filepath@, creating path folders if necessary. If
--- @check_diff@ is true, only write if the content has changed to avoid
+-- Write `data` to `filepath`, creating path folders if necessary. If
+-- `check_diff` is true, only write if the content has changed to avoid
 -- changing stat information on the file.
 function lib.writeall(filepath, data, check_diff)
   -- get base directory and build components if necessary
@@ -151,27 +151,27 @@ function lib.writeall(filepath, data, check_diff)
   return s
 end
 
--- Build necessary folders to create a given @path@.
+-- Build necessary folders to create a given `path`.
 function lib.makePath(path)
   local fullpath = lib.absolutizePath(path)
   private.makePathPart(fullpath, fullpath)
 end
 
--- Move a file or directory from @path@ to @new_path@. This is like "os.rename"
+-- Move a file or directory from `path` to `new_path`. This is like "os.rename"
 -- but it also builds necessary path components in new_path.
 function lib.move(path, new_path)
   lib.makePath(lib.pathDir(new_path))
   return os.rename(path, new_path)
 end
 
--- Copy a file from @path@ to @new_path@. Builds necessary path components
+-- Copy a file from `path` to `new_path`. Builds necessary path components
 -- in new_path.
 function lib.copy(path, new_path)
   lib.makePath(lib.pathDir(new_path))
   return os.execute(string.format('cp %s %s', lib.shellQuote(path), lib.shellQuote(new_path)))
 end
 
--- Delete the file located at @path@. Does nothing if the element at @path@ does
+-- Delete the file located at `path`. Does nothing if the element at `path` does
 -- not exist (already removed).
 function lib.rmFile(path)
   local typ = lib.fileType(path)
@@ -180,7 +180,7 @@ function lib.rmFile(path)
   os.remove(path)
 end
 
--- Remove the directory at @path@. If @recursive@ is true, remove recursively.
+-- Remove the directory at `path`. If `recursive` is true, remove recursively.
 -- *This is a dangerous method* if the source path is not ensured to be exempt
 -- of mistakes.
 function lib.rmTree(path, recursive)
@@ -203,7 +203,7 @@ function lib.rmTree(path, recursive)
   end
 end
 
--- Return the parent folder and filename from a @filepath@. Usage:
+-- Return the parent folder and filename from a `filepath`. Usage:
 --
 --   local base, file = lub.pathDir(filepath)
 -- 
@@ -220,9 +220,9 @@ function lib.pathDir(filepath)
   end
 end
 
--- Return an absolute path from a @path@ and optional @basepath@. If basepath is
+-- Return an absolute path from a `path` and optional `basepath`. If basepath is
 -- not provided, the method uses the current directory. This method
--- resolves @/../@ and @/./@ in paths and returns a clean path. Can also be
+-- resolves `/../` and `/./` in paths and returns a clean path. Can also be
 -- used with urls.
 --
 -- For example:
@@ -275,12 +275,12 @@ end
 
 -- # Strings, Arrays
 
--- Removes white spaces at the beginning and end of the string @str@.
+-- Removes white spaces at the beginning and end of the string `str`.
 function lib.strip(str)
   return string.match(str, '^[ \t\n\r]*(.-)[ \t\n\r]*$')
 end
 
--- Split a string @str@ into elements separated by the pattern @pat@. The
+-- Split a string `str` into elements separated by the pattern `pat`. The
 -- function returns a table.
 --
 --   local t = lub.split('foo/bar/baz', '/')
@@ -315,7 +315,7 @@ function lib.split(str, pat)
   return t
 end
 
--- Join elements of a table @list@ with separator @sep@. Returns a string.
+-- Join elements of a table `list` with separator `sep`. Returns a string.
 --
 --   local x = lub.join({'foo', 'bar', 'baz'}, '.')
 --   --> 'foo.bar.baz'
@@ -331,8 +331,8 @@ function lib.join(list, sep)
   return res or ''
 end
 
--- Insert @elem@ into a @list@, keeping entries in "list" sorted. If elem is not
--- a string, the @elem[key]@ is used to get a string for sorting.
+-- Insert `elem` into a `list`, keeping entries in "list" sorted. If elem is not
+-- a string, the `elem[key]` is used to get a string for sorting.
 function lib.insertSorted(list, elem, key)
   local pos = -1
   for i, n in ipairs(list) do
@@ -353,7 +353,7 @@ function lib.insertSorted(list, elem, key)
   end
 end
 
--- Merge values in @table@ inside @source@. All keys are considered (array and
+-- Merge values in `table` inside `source`. All keys are considered (array and
 -- hash).
 function lib.merge(source, table)
   for k, v in pairs(table) do
@@ -386,7 +386,7 @@ end
 -- nodoc
 lib.deepMerge = deepMerge
 
--- Deep merge @value@ into @base@ at @key@. Returns true if *base* has been
+-- Deep merge `value` into `base` at `key`. Returns true if *base* has been
 -- changed. For example:
 --
 --   local base = {a = { b = 4, c = 5 }}
@@ -399,7 +399,7 @@ lib.deepMerge = deepMerge
 -- # Debugging
 
 local orig_req = require
--- Print calls to @require@. This can be used to list all code dependencies.
+-- Print calls to `require`. This can be used to list all code dependencies.
 -- Usage:
 --
 --   lub.traceRequire()
@@ -434,7 +434,7 @@ end
 -- # Miscellanous
 lib.print = print
 
--- Quote string @str@ so that it can be inserted in a shell command. Example:
+-- Quote string `str` so that it can be inserted in a shell command. Example:
 --
 --   os.execute(string.format('latex %s', lub.shellQuote(filepath)))
 function lib.shellQuote(str)
