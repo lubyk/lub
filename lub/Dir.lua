@@ -18,7 +18,7 @@ local lfs = require 'lfs'
 
 -- # Class functions
 
--- Create a new directory helper pointing at @path.
+-- Create a new directory helper pointing at `path`.
 function lib.new(path)
   local self = {path = path}
   return setmetatable(self, lib)
@@ -42,7 +42,7 @@ end
 
 -- # Methods
 
--- Return an iterator to recursively find files matching @pattern@ in the
+-- Return an iterator to recursively find files matching `pattern` in the
 -- directory. The pattern syntax is the same as string.match.
 --
 --   -- Find files ending in ".lua".
@@ -95,7 +95,7 @@ function lib:list()
 end
 
 -- Return true if there is at least one child in the directory that matches
--- @pattern@.
+-- `pattern`.
 function lib:contains(pattern)
   for file in lfs.dir(self.path) do
     if string.match(file, pattern) then

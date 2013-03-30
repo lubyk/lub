@@ -117,6 +117,8 @@ end
 
 -- Return true if the file or folder pointed by `path` exists.
 -- function lib.exist(path)
+
+-- nodoc
 lib.exist = lib.fileType
 
 -- Return the content of a file as a lua string (not suitable for very long
