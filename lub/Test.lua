@@ -171,11 +171,12 @@ end
 -- create an `all.lua` file in the tests folder with:
 --
 --   local lub = require 'lub'
---   lub.Test.files(lub.scriptDir())
+--   lub.Test.files(lub.path '|')
 --
 -- This will run tests for all files matching the default pattern `%_test.lua$`.
 -- If the optional `reject` pattern is provided, paths matching this pattern
--- will be, well, rejected.
+-- will be, well, rejected. See [lub.path](lub.html#path) for details on the
+-- pipe syntax.
 function lib.files(list_or_path, pattern, reject)
   private.parseArgs()
   pattern = pattern or '%_test.lua$'
@@ -553,7 +554,6 @@ function private.testAll()
     private.report()
     sched:quit()
   end)
-  private.report()
 end
 
 -- Report summary for all tests.

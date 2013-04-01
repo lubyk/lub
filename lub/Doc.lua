@@ -1448,7 +1448,7 @@ private.copyAssets = {}
 
 function private.getTemplate(format)
   local filename = 'template.'..format
-  return lub.content(lub.scriptDir()..'/doc/'..filename)
+  return lub.content(lub.path('|doc/'..filename))
 end
 
 --=============================================== HTML TEMPLATE
@@ -1497,7 +1497,7 @@ function private.copyFiles(list, target)
 end
 
 function private.copyAssets.html(target)
-  local src_base = lub.scriptDir()
+  local src_base = lub.path '|'
   for _, path in ipairs {
     'css/bootstrap.css',
     'css/docs.css',

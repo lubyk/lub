@@ -6,6 +6,10 @@
 
 --]]--------------------
 local private = {}
+local gsub  = string.gsub
+local sub   = string.sub
+local match = string.match
+local len   = string.len
 
 local CALL_TO_NEW = {__call = function(lib, ...) return lib.new(...) end}
 function class(class_name, tbl)
@@ -15,7 +19,7 @@ function class(class_name, tbl)
 
   -- Do not add class to namespace automatically
   
-  -- local base, klass = string.match(class_name, '^(.+)%.(.+)$')
+  -- local base, klass = match(class_name, '^(.+)%.(.+)$')
   -- klass = klass or class_name
 
   -- if base and _G[base] then
@@ -50,7 +54,7 @@ local lfs = require 'lfs'
 
 -- Find the source of the current file or the file up x levels in the call
 -- chain (-1 = up one level).
-function lib.scriptSource(level)
+local function scriptSource(level)
   local level = level or 0
   return debug.getinfo(2 - level).source
 end
@@ -59,46 +63,70 @@ end
 -- chain (-1 = up one level). The path is relative to the current directory.
 --
 --   -- get path of running script
---   local my_path = lun.scriptPath()
+--   local my_path = lub.scriptPath()
 --   --> 'test/lk_test.lua'
 -- 
 -- If you need an absolute path, use #absolutizePath.
-function lib.scriptPath(level)
+local function scriptPath(level)
   local level = level or 0
-  return string.match(lib.scriptSource(level - 1), '^@(.*)$')
+  return match(scriptSource(level - 1), '^@(.*)$')
 end
 
 -- Find the directory of the current script or the directory of the script up x
 -- levels in the call chain (-1 = up one level). This is the same as #scriptPath
 -- but it returns the parent directory.
-function lib.scriptDir(level)
+local function scriptDir(level)
   local level = level or 0
-  local file = lib.scriptPath(level - 1)
-  assert(file, "Cannot use lun.scriptDir here because of a tail call optimization.")
-  if string.match(file, '/') then
-    local p = string.gsub(lib.scriptPath(level - 1), '/[^/]+$', '')
+  local file = scriptPath(level - 1)
+  assert(file, "Cannot use scriptDir here because of a tail call optimization.")
+  if match(file, '/') then
+    local p = gsub(scriptPath(level - 1), '/[^/]+$', '')
     return p
   else
     return '.'
   end
 end
 
--- Return a file path relative to the running script.
-function lib.relPath(path)
-  return lub.scriptDir(-1) .. '/' .. path
+-- Return a path by resolving special initial characters:
+--
+-- + `/`   : absolute path, resolves '..' in path.
+-- + `|`   : path relative to script directory, resolves '..' in path.
+-- + `&`   : returns current script path.
+--
+-- For example:
+--
+--   print(lub.path '|')
+--   --> current script directory
+--
+--   print(lub.path '|..')
+--   --> parent of script directory
+--
+function lib.path(path)
+  local chr = sub(path, 1, 1)
+  if chr == '|' then
+    local b = scriptDir(-1)
+    if len(path) == 1 then return b end
+    local r = sub(path, 2, -1)
+    return lib.absolutizePath(b..'/'..r)
+  elseif chr == '&' then
+    -- tail call optimization => 0, not -1
+    return scriptPath(0)
+  else
+    return lib.absolutizePath(path)
+  end
 end
 
 -- Declare a method as being deprecated. This should be used when method names
 -- are changed to avoid breaking code without warnings. The syntax is:
 --
 --   function lib.badName(...)
---     return lib.deprecation('lun', 'badName', 'betterName', ...)
+--     return lib.deprecation('lub', 'badName', 'betterName', ...)
 --   end
 -- 
 -- When someone uses the "badName" method, a deprecation warning is printed:
 --
 --   [DEPRECATION] {traceback}
---       'lun.badName' is deprecated. Please use 'lun.betterName' instead.
+--       'lub.badName' is deprecated. Please use 'lub.betterName' instead.
 function lib.deprecation(lib_name, old, new, ...)
   local trace = lib.split(debug.traceback(), '\n\t')[4]
   local arg = ...
@@ -217,7 +245,7 @@ end
 -- 
 -- This can also be used on urls.
 function lib.pathDir(filepath)
-  local base, file = string.match(filepath, '(.*)/(.*)$')
+  local base, file = match(filepath, '(.*)/(.*)$')
   if not base then
     return '.', filepath
   elseif base == '' then
@@ -238,7 +266,7 @@ end
 --   local abs_path = lub.absolutizePath('foo/bar/../baz', '/home')
 --   --> '/home/foo/baz'
 function lib.absolutizePath(path, basepath)
-  if not string.match(path, '^/') then
+  if not match(path, '^/') then
     path = string.format('%s/%s', basepath or lfs.currentdir(), path)
   end
   -- resolve '/./' and '/../'
@@ -285,7 +313,7 @@ end
 
 -- Removes white spaces at the beginning and end of the string `str`.
 function lib.strip(str)
-  return string.match(str, '^[ \t\n\r]*(.-)[ \t\n\r]*$')
+  return match(str, '^[ \t\n\r]*(.-)[ \t\n\r]*$')
 end
 
 -- Split a string `str` into elements separated by the pattern `pat`. The
@@ -430,7 +458,7 @@ end
 --   --> lub/util.lua:426:  foo
 function lib.log(...)
   local trace = lib.split(debug.traceback(), '\n\t')[3]
-  local file, line = string.match(trace, '^([^:]+):([^:]+):')
+  local file, line = match(trace, '^([^:]+):([^:]+):')
   if file and line then
     print(string.format('%s:%i:', file, line), ...)
   else
@@ -446,8 +474,8 @@ lib.print = print
 --
 --   os.execute(string.format('latex %s', lub.shellQuote(filepath)))
 function lib.shellQuote(str)
-  str = string.gsub(str, '\\', '\\\\')
-  return '"' .. string.gsub(str, '"', '\\"') .. '"'
+  str = gsub(str, '\\', '\\\\')
+  return '"' .. gsub(str, '"', '\\"') .. '"'
 end
 
 function private.makePathPart(path, fullpath)

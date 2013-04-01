@@ -4,10 +4,10 @@
 
 --]]------------------------------------------------------
 local lub    = require 'lub'
-local should = lub.Test('lub.Doc')
-local fpath  = lub.Test.fixturePath
+local should = lub.Test 'lub.Doc'
 
-local tmp = lub.relPath('fixtures/doc/tmp')
+local tmp   = lub.path '|fixtures/tmp'
+local tpath = lub.path '|fixtures/doc/foo/DocTest.lua'
 
 function should.teardown()
 --  lub.rmTree(tmp)
@@ -18,12 +18,12 @@ function should.autoLoad()
 end
 
 function should.extractTitle()
-  local doc = lub.Doc(lub.relPath('fixtures/doc/foo/DocTest.lua'))
+  local doc = lub.Doc(tpath)
   assertEqual('DocTest', doc.name)
 end
 
 function should.extractSummary()
-  local doc = lub.Doc(lub.relPath('fixtures/doc/foo/DocTest.lua'))
+  local doc = lub.Doc(tpath)
   -- first paragraph in first group in first section.
   local summary = doc.sections[1][1][1]
   assertValueEqual({
@@ -34,7 +34,7 @@ function should.extractSummary()
 end
 
 function should.extractDescription()
-  local doc = lub.Doc(lub.relPath('fixtures/doc/foo/DocTest.lua'))
+  local doc = lub.Doc(tpath)
   -- first group of paragraphs
   local description = doc.sections[1][1]
   assertValueEqual({
@@ -62,12 +62,12 @@ function should.extractDescription()
 end
 
 function should.convertToHtml()
-  local doc = lub.Doc(lub.relPath('fixtures/doc/foo/DocTest.lua'))
+  local doc = lub.Doc(tpath)
   assertMatch('<title>Documentation Tester</title>', doc:toHtml())
 end
 
 function should.extractParams()
-  local doc = lub.Doc(lub.relPath('fixtures/doc/foo/DocTest.lua'))
+  local doc = lub.Doc(tpath)
   local list = {}
   for _, def in ipairs(doc.params.zoom) do
     table.insert(list, def.tparam..' = '..def.params..' ('..def[1].text..')')
@@ -84,7 +84,7 @@ end
 function should.makeDoc()
   lub.Doc.make {
     sources = {
-      lub.relPath('fixtures/doc'),
+      lub.path '|fixtures/doc',
     },
     target = tmp,
     format = 'html',
@@ -127,7 +127,7 @@ end
 
 --=============================================== HTML generation
 function should.insertHead()
-  local doc  = lub.Doc(lub.relPath('fixtures/doc/foo/DocTest.lua'), {
+  local doc  = lub.Doc(tpath, {
     head = '<foo>bar baz</foo>',
   })
   local html = doc:toHtml()
