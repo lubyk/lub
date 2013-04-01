@@ -323,6 +323,7 @@ local lub = require 'lub'
 -- + navigation : Navigation menu on the right.
 -- + children   : List of classes (in main content part).
 -- + head       : HTML content to insert in `<head>` tag.
+-- + index_head : HTML content to insert in `<head>` tag of index file.
 -- + css        : Path to a CSS file to use instead of `css/docs.css`.
 -- + header     : HTML code to display in header.
 -- + footer     : HTML code to display in footer.
@@ -592,6 +593,12 @@ function private.makeDoc(tree, def)
   if tree.is_root then
     tree.__name = 'index'
     -- Create index.html file
+
+    -- Support for meta tag in index page.
+    if def.index_head then
+      def.head = def.index_head
+    end
+
     local doc = lib.new(nil, {
       code = def.index or [=[ 
 --[[----------
