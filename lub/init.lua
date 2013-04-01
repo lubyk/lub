@@ -50,7 +50,7 @@ lub = lib
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
 
--- # Script
+-- # Filesystem
 
 -- Find the source of the current file or the file up x levels in the call
 -- chain (-1 = up one level).
@@ -115,30 +115,6 @@ function lib.path(path)
     return lib.absolutizePath(path)
   end
 end
-
--- Declare a method as being deprecated. This should be used when method names
--- are changed to avoid breaking code without warnings. The syntax is:
---
---   function lib.badName(...)
---     return lib.deprecation('lub', 'badName', 'betterName', ...)
---   end
--- 
--- When someone uses the "badName" method, a deprecation warning is printed:
---
---   [DEPRECATION] {traceback}
---       'lub.badName' is deprecated. Please use 'lub.betterName' instead.
-function lib.deprecation(lib_name, old, new, ...)
-  local trace = lib.split(debug.traceback(), '\n\t')[4]
-  local arg = ...
-  if arg then
-    print(string.format("[DEPRECATION] %s\n\t'%s.%s' is deprecated. Please use '%s.%s' instead.", trace, lib_name, old, lib_name, new))
-    return _G[lib_name][new](...)
-  else
-    print(string.format("[DEPRECATION] %s\n\t'%s.%s' is deprecated and will be removed. Please use '%s' instead.", trace, lib_name, old, new))
-  end
-end
-
--- # Filesystem
 
 -- Test for file/directory existence at `path`. If the element exists, returns
 -- the file type such as *'directory'* or *'file'*. Returns nil if there is
@@ -468,6 +444,29 @@ end
 
 
 -- # Miscellanous
+
+-- Declare a method as being deprecated. This should be used when method names
+-- are changed to avoid breaking code without warnings. The syntax is:
+--
+--   function lib.badName(...)
+--     return lib.deprecation('lub', 'badName', 'betterName', ...)
+--   end
+-- 
+-- When someone uses the "badName" method, a deprecation warning is printed:
+--
+--   [DEPRECATION] {traceback}
+--       'lub.badName' is deprecated. Please use 'lub.betterName' instead.
+function lib.deprecation(lib_name, old, new, ...)
+  local trace = lib.split(debug.traceback(), '\n\t')[4]
+  local arg = ...
+  if arg then
+    print(string.format("[DEPRECATION] %s\n\t'%s.%s' is deprecated. Please use '%s.%s' instead.", trace, lib_name, old, lib_name, new))
+    return _G[lib_name][new](...)
+  else
+    print(string.format("[DEPRECATION] %s\n\t'%s.%s' is deprecated and will be removed. Please use '%s' instead.", trace, lib_name, old, new))
+  end
+end
+
 lib.print = print
 
 -- Quote string `str` so that it can be inserted in a shell command. Example:
