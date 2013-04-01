@@ -76,10 +76,16 @@ function lib.scriptDir(level)
   local file = lib.scriptPath(level - 1)
   assert(file, "Cannot use lun.scriptDir here because of a tail call optimization.")
   if string.match(file, '/') then
-    return string.gsub(lib.scriptPath(level - 1), '/[^/]+$', '')
+    local p = string.gsub(lib.scriptPath(level - 1), '/[^/]+$', '')
+    return p
   else
     return '.'
   end
+end
+
+-- Return a file path relative to the running script.
+function lib.relPath(path)
+  return lub.scriptDir(-1) .. '/' .. path
 end
 
 -- Declare a method as being deprecated. This should be used when method names

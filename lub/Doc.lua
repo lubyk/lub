@@ -296,6 +296,8 @@ local CODE = '§§'
 local ALLOWED_OPTIONS = {lit = true, loose = true}
 local DEFAULT_HEADER = [[ ]]
 local DEFAULT_FOOTER = [[ made with <a href='http://doc.lubyk.org/lub.Doc.html'>lub.Doc</a> ]]
+local gsub  = string.gsub
+local match = string.match
 
 -- Dependencies
 local lub = require 'lub'
@@ -320,8 +322,10 @@ local lub = require 'lub'
 -- + name       : Used when no `path` is provided.
 -- + navigation : Navigation menu on the right.
 -- + children   : List of classes (in main content part).
--- + header     : Html code to display in header.
--- + footer     : Html code to display in footer.
+-- + head       : HTML content to insert in `<head>` tag.
+-- + css        : Path to a CSS file to use instead of `css/docs.css`.
+-- + header     : HTML code to display in header.
+-- + footer     : HTML code to display in footer.
 -- + target     : Target directory (only used when using PNG image generation
 --                for math code.
 function lib.new(path, def)
@@ -337,6 +341,7 @@ function lib.new(path, def)
     sections = {},
     -- List of documented parameters.
     params   = {},
+    opts     = def.opts or def,
   }
   
   if def.navigation then
@@ -504,7 +509,7 @@ function private.insertInTree(tree, fullpath, base, prepend)
   if prepend then
     path = prepend .. '/' .. path
   end
-  if not string.match(path, '/') and not string.match(base, '/lib$') then
+  if not match(path, '/') and not match(base, '/lib$') then
     -- base is too close to file, we need to have at least one
     -- folder level to get module name. If we are scanning "lib", consider
     -- files inside to be module definitions.
@@ -522,7 +527,7 @@ function private.insertInTree(tree, fullpath, base, prepend)
     if i == last then
       is_init = part == 'init.lua'
       -- Remove extension
-      part = string.match(part, '(.*)%.lua$')
+      part = match(part, '(.*)%.lua$')
     end
 
     if is_init then
@@ -570,11 +575,12 @@ function private.makeDoc(tree, def)
       header     = def.header,
       footer     = def.footer or DEFAULT_FOOTER,
       toplevel   = tree.is_root,
+      opts       = def,
     })
     elem.__title   = doc.sections[1].title
     elem.__summary = doc.sections[1][1][1]
     local img = doc.sections[1][1][2]
-    if img and string.match(img.text or '', '^!%[') then
+    if img and match(img.text or '', '^!%[') then
       elem.__img = img
     end
     elem.__todo    = doc.todo
@@ -601,6 +607,7 @@ function private.makeDoc(tree, def)
       header     = def.header,
       footer     = def.footer or DEFAULT_FOOTER,
       toplevel   = false,
+      opts       = def,
     })
     local trg = def.target .. '/index.' .. def.format
     lub.writeall(trg, private.output[def.format](doc, def.template))
@@ -611,8 +618,8 @@ end
 
 function private.getName(path)
   local name, module, fullname
-  name = assert(string.match(path, '([^/]+)%.lua$'), "Invalid path '"..path.."'.")
-  module = string.match(path, '([^/]+)/[^/]+$')
+  name = assert(match(path, '([^/]+)%.lua$'), "Invalid path '"..path.."'.")
+  module = match(path, '([^/]+)/[^/]+$')
   if module then
     fullname = module .. '.' .. name
   else
@@ -658,7 +665,7 @@ function private:doParse(iterator)
       for i=1,#state do
         local matcher = state[i]
         if not matcher.on_enter or entering then
-          local m = {string.match(line, matcher.match)}
+          local m = {match(line, matcher.match)}
           if m[1] then
             local move = matcher.move
             if matcher.output then
@@ -676,7 +683,7 @@ function private:doParse(iterator)
               state, replay = move(self)
               if not state then
                 local def = debug.getinfo(move)
-                error("Error in state definition ".. string.match(def.source, '^@(.+)$') .. ':' .. def.linedefined)
+                error("Error in state definition ".. match(def.source, '^@(.+)$') .. ':' .. def.linedefined)
               end
               entering = true
               if state.enter then state.enter(self) end
@@ -727,7 +734,7 @@ function private:todoFixme(i, all, typ, text)
   end
   local group = self.in_func or self.group
 
-  local no_list, txt = string.match(text, '^(-) *(.*)$')
+  local no_list, txt = match(text, '^(-) *(.*)$')
   if no_list then
     text = txt
   end
@@ -889,7 +896,7 @@ function private:newSection(i, title)
   if #self.sections == 1 then
     name = self.name
   else
-    name = string.gsub(title, ' ', '-')
+    name = gsub(title, ' ', '-')
   end
   self.section.name = name
 end
@@ -1002,7 +1009,7 @@ parser.mcode = {
   -- first line
   { match  = '^    (.*)$',
     output = function(self, i, d)
-      local lang = string.match(d, '#([^ ]+)')
+      local lang = match(d, '#([^ ]+)')
       if lang then
         d = nil
       else
@@ -1037,7 +1044,7 @@ parser.code = {
   -- first line
   { match  = '^ *%-%-   (.*)$',
     output = function(self, i, d)
-      local lang = string.match(d, '#([^ ]+.+)')
+      local lang = match(d, '#([^ ]+.+)')
       if lang then
         d = nil
       else
@@ -1148,11 +1155,11 @@ parser.group = {
       end
     end,
   },
-  -- h2: new section
+  -- new section
   { match  = '^ *%-%- *# (.+)$',
     output = private.newSection,
   },
-  -- h3: new title
+  -- new title
   { match  = '^ *%-%- *## (.+)$',
     output = private.newTitle,
   },
@@ -1207,7 +1214,7 @@ parser.end_comment = {
   -- lib param
   { match  = 'lib%.([a-zA-Z_0-9]+) *= *(.+)$',
     output = function(self, i, key, def)
-      local def2 = string.match(def, '^(.-) *%-%- *doc *$')
+      local def2 = match(def, '^(.-) *%-%- *doc *$')
       if def2 then
         -- Special case where a lib attribute itself is documented
         self.curr_param = {}
@@ -1282,8 +1289,8 @@ parser.lua = {
       else
         self.group = {}
         -- document all params
-        -- string.match(def, '^({) *$') or
-        local def2 = string.match(def, '^(.-) *%-%- *doc *$')
+        -- match(def, '^({) *$') or
+        local def2 = match(def, '^(.-) *%-%- *doc *$')
         if def2 then
           -- Special case where a lib attribute itself is documented
           self.curr_param = {}
@@ -1329,7 +1336,7 @@ parser.lua = {
       self.curr_param = {}
       self.params[key] = self.curr_param
       -- remove 'local' prefix
-      local k = string.match(key, '^local *(.+)$')
+      local k = match(key, '^local *(.+)$')
       key = k or key
       private.newTitle(self, i, key .. ' {')
     end,
@@ -1497,6 +1504,15 @@ function private.copyAssets.html(target)
   end
 end
 
+local function escapeHtml(text)
+  return gsub(
+    gsub(text,
+      '<', '&lt;'
+    ),
+      '>', '&gt;'
+    )
+end
+
 function private:paraToHtml(para)
   local text = para.text or ''
   if para.class then
@@ -1508,23 +1524,14 @@ function private:paraToHtml(para)
   elseif para.code then
     local tag
     local k =
-    string.match(para.code or '', '^txt( .+)?$')
-    if string.match(para.code, '^txt') then
+    match(para.code or '', '^txt( .+)?$')
+    if match(para.code, '^txt') then
       tag = "<pre class='"..para.code.."'>"
     else
       tag = "<pre class='prettyprint lang-"..para.code.."'>"
     end
     return tag .. 
-      private.autoLink(
-      string.gsub(
-      string.gsub(
-      string.gsub(text,
-        '<', '&lt;'
-      ),
-        '>', '&gt;'
-      ),
-        '%%%%', ''
-      ), nil)..
+      private.autoLink(gsub(escapeHtml(text), '%%%%', ''), nil)..
       "</pre>"
   elseif para.span then
     return private.spanToHtml(self, para)
@@ -1571,64 +1578,64 @@ function private.autoLink(p, codes)
   -- method link lub.Doc#make or lub.Doc.make
   if codes then
     -- para auto-link
-    p = string.gsub(p, ' ([a-z]+%.[A-Z]+[a-z][a-zA-Z]+)([#%.])([a-zA-Z_]+)', function(class, typ, fun)
+    p = gsub(p, ' ([a-z]+%.[A-Z]+[a-z][a-zA-Z]+)([#%.])([a-zA-Z_]+)', function(class, typ, fun)
       table.insert(codes, string.format(" <a href='%s.html#%s'>%s%s%s</a>", class, fun, class, typ, fun))
       return CODE..#codes
     end)
   else
     -- code auto-link
-    p = string.gsub(p, '([a-z]+%.[A-Z]+[a-z][a-zA-Z]+)([#%.])([a-zA-Z_]+)', function(class, typ, fun)
+    p = gsub(p, '([a-z]+%.[A-Z]+[a-z][a-zA-Z]+)([#%.])([a-zA-Z_]+)', function(class, typ, fun)
       return string.format("<a href='%s.html#%s'>%s%s%s</a>", class, fun, class, typ, fun)
     end)
   end
   -- auto-link lub.Doc
-  p = string.gsub(p, ' ([a-z]+%.[A-Z]+[a-z0-9][a-zA-Z]*)([%. %(])', " <a href='%1.html'>%1</a>%2")
+  p = gsub(p, ' ([a-z]+%.[A-Z]+[a-z0-9][a-zA-Z]*)([%. %(])', " <a href='%1.html'>%1</a>%2")
   return p
 end
 
 function private:textToHtml(text)
   -- filter content
-  local p = text or ''
+  local p = escapeHtml(text or '')
   -- We could replace textToHtml with a walking parser to avoid double parsing.
   
   -- code
   local codes = {}
-  p = string.gsub(p, '%[math%](.-)%[/math%]', function(latex)
+  p = gsub(p, '%[math%](.-)%[/math%]', function(latex)
     table.insert(codes, private.mathjaxTag(self, {math = 'inline', text = latex}))
     return CODE..#codes
   end)
 
-  p = string.gsub(p, '`(.-)`', function(code)
+  p = gsub(p, '`(.-)`', function(code)
     table.insert(codes, '<code>'..code..'</code>')
     return CODE..#codes
   end)
   p = private.autoLink(p, codes)
   -- section link #Make or method link #foo
-  p = string.gsub(p, ' #([A-Za-z]+[A-Za-z_]+)', function(name)
+  p = gsub(p, ' #([A-Za-z]+[A-Za-z_]+)', function(name)
     table.insert(codes, string.format(" <a href='#%s'>%s</a>", name, name))
     return CODE..#codes
   end)
 
-  p = string.gsub(p, '^#([A-Za-z]+[A-Za-z_]+)', function(name)
+  p = gsub(p, '^#([A-Za-z]+[A-Za-z_]+)', function(name)
     table.insert(codes, string.format(" <a href='#%s'>%s</a>", name, name))
     return CODE..#codes
   end)
 
   -- strong
-  p = string.gsub(p, '%*([^\n]-)%*', '<strong>%1</strong>')
+  p = gsub(p, '%*([^\n]-)%*', '<strong>%1</strong>')
   -- em
-  p = string.gsub(p, ' _(.-)_ ', ' <em>%1</em> ')
-  p = string.gsub(p, '^_(.-)_', '<em>%1</em>')
-  p = string.gsub(p, '_(.-)_$', '<em>%1</em>')
+  p = gsub(p, ' _(.-)_ ', ' <em>%1</em> ')
+  p = gsub(p, '^_(.-)_', '<em>%1</em>')
+  p = gsub(p, '_(.-)_$', '<em>%1</em>')
   -- ![Dummy example image](img/box.jpg)
-  p = string.gsub(p, '!%[(.-)%]%((.-)%)', "<img alt='%1' src='%2'/>")
+  p = gsub(p, '!%[(.-)%]%((.-)%)', "<img alt='%1' src='%2'/>")
   -- link [some text](http://example.com)
-  p = string.gsub(p, '%[([^%]]+)%]%(([^%)]+)%)', function(text, href)
+  p = gsub(p, '%[([^%]]+)%]%(([^%)]+)%)', function(text, href)
     return "<a href='"..href.."'>"..text.."</a>"
   end)
 
   if #codes > 0 then
-    p = string.gsub(p, CODE..'([0-9]+)', function(id)
+    p = gsub(p, CODE..'([0-9]+)', function(id)
       return codes[tonumber(id)]
     end)
   end
@@ -1686,7 +1693,7 @@ function private:latexImageTag(para)
   if not target then return mock end
 
   local pre, post = '', ''
-  local type = string.match(latex, '^ *\\begin\\{(.-)}')
+  local type = match(latex, '^ *\\begin\\{(.-)}')
   if not type or
     (type ~= 'align' and
     type ~= 'equation' and

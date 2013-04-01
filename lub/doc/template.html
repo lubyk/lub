@@ -11,7 +11,13 @@
 
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    {% if self.opts.css then %}
+    {{ self.opts.css }}
+    <link href="{{self.opts.css}}" rel="stylesheet">
+    {% else %}
     <link href="css/docs.css" rel="stylesheet">
+    {% end %}
+    {{self.opts.head or ''}}
   </head>
 
   <body>

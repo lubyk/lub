@@ -48,7 +48,7 @@ function lib.new(source)
   self.func, self.err = loadstring(self.lua)
   if self.err then
     print(self.err)
-    print(self.lua)
+    assert(false, self.err)
   end
   return self
 end
