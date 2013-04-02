@@ -1,0 +1,15 @@
+--- This file is part of Lubyk project
+
+name = "Lub"
+version = "{{lub.VERSION}}"
+
+desc = "Lubyk base module (doc generator, template, testing)"
+author = "Gaspard Bucher"
+license = "MIT"
+url = "http://lubyk.org"
+maintainer = "Gaspard Bucher"
+
+depends = {
+	"lua ~> 5.1",
+  "luafilesystem >= 1.5.0",
+}

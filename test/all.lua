@@ -1,4 +1,4 @@
-local lub = require 'lub'
+require 'lub'
 
 lub.Test.files(lub.path '|')
 

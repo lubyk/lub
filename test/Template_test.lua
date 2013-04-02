@@ -3,7 +3,7 @@
   lub.Template test
 
 --]]------------------------------------------------------
-local lub = require 'lub'
+require 'lub'
 -- Run the test with the lub directory as current path.
 local should = lub.Test 'lub.Template'
 

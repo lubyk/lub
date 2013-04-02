@@ -6,7 +6,7 @@
   ...
 
 --]]------------------------------------------------------
-local lub = require 'lub'
+require 'lub'
 
 local should = lub.Test 'lub.Dir'
 

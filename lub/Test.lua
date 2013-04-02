@@ -34,6 +34,9 @@ local current = nil
 --                body of missing tests and outputed.
 -- + `metatable`: the metatable for the class being tested if it cannot be 
 --                found in global namespace.
+-- 
+-- In a test file, you can ignore coverage warning for deprecated functions by
+-- setting `should.ignore.[func_name] = true`.
 function lib.new(name, options)
   options = options or {}
   local self = {
@@ -45,6 +48,8 @@ function lib.new(name, options)
       errors = {},
       user_suite = options.user_suite,
     },
+    -- This is used to ignore coverage errors for deprecated functions.
+    ignore = {},
   }
   -- This is to get setup/teardown functions.
   self._info.self = self
@@ -408,6 +413,7 @@ function private:runSuite()
     _G.assert(meta, string.format("Testing coverage but '%s' metatable not found.", self._info.name))
 
     local coverage = {}
+    self._info.coverage_ = coverage
     for k, v in pairs(meta) do
       if type(v) == 'function' then
         coverage[k] = v
@@ -424,7 +430,7 @@ function private:runSuite()
       local all_ok = true
       local not_tested = {}
       for k, info in pairs(coverage) do
-        if info ~= true then
+        if info ~= true and not self.ignore[k] then
           if lib.mock then
             k = string.upper(string.sub(k, 1, 1))..string.sub(k, 2, -1)
             lub.insertSorted(not_tested, {

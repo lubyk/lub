@@ -1,4 +1,4 @@
-local lub    = require 'lub'
+require 'lub'
 local should = lub.Test 'lub'
 
 function should.readAll()
@@ -257,7 +257,14 @@ function should.insertSorted()
   assertValueEqual({'a','b','c'}, list)
 end
 
+function should.returnParentDirectory()
+  local parent, child = lub.dir('/a/b/c')
+  assertEqual('/a/b', parent)
+  assertEqual('c', child)
+end
 
+-- Disable coverage testing for deprecated pathDir.
+should.ignore.pathDir = true
 
 
 should:test()

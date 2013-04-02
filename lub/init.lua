@@ -14,6 +14,7 @@ local len   = string.len
 local CALL_TO_NEW = {__call = function(lib, ...) return lib.new(...) end}
 
 local lib = {}
+lub = lib
 
 --[[------------------------------------------------------
 
@@ -29,7 +30,7 @@ local lfs = require 'lfs'
 
 -- Current version for 'lub' module. Minor version numbers are never released
 -- and are used during development.
-lib.VERSION = '1.1'
+lib.VERSION = '1.0'
 
 -- # Class management
 --
@@ -118,7 +119,7 @@ function lib.path(path, level)
     if chr == '&' then
       return s
     end
-    local b = lib.pathDir(s)
+    local b = lib.dir(s)
     if len(path) == 1 then return b end
     local r = sub(path, 2, -1)
     return lib.absolutizePath(b..'/'..r)
@@ -162,7 +163,7 @@ end
 -- changing stat information on the file.
 function lib.writeall(filepath, data, check_diff)
   -- get base directory and build components if necessary
-  lib.makePath(lib.pathDir(filepath))
+  lib.makePath(lib.dir(filepath))
   if check_diff and lib.exist(filepath) then
     if data == lib.content(filepath) then
       return true
@@ -183,14 +184,14 @@ end
 -- Move a file or directory from `path` to `new_path`. This is like "os.rename"
 -- but it also builds necessary path components in new_path.
 function lib.move(path, new_path)
-  lib.makePath(lib.pathDir(new_path))
+  lib.makePath(lib.dir(new_path))
   return os.rename(path, new_path)
 end
 
 -- Copy a file from `path` to `new_path`. Builds necessary path components
 -- in new_path.
 function lib.copy(path, new_path)
-  lib.makePath(lib.pathDir(new_path))
+  lib.makePath(lib.dir(new_path))
   return os.execute(string.format('cp %s %s', lib.shellQuote(path), lib.shellQuote(new_path)))
 end
 
@@ -228,10 +229,10 @@ end
 
 -- Return the parent folder and filename from a `filepath`. Usage:
 --
---   local base, file = lub.pathDir(filepath)
+--   local base, file = lub.dir(filepath)
 -- 
 -- This can also be used on urls.
-function lib.pathDir(filepath)
+function lib.dir(filepath)
   local base, file = match(filepath, '(.*)/(.*)$')
   if not base then
     return '.', filepath
@@ -241,6 +242,11 @@ function lib.pathDir(filepath)
   else
     return base, file
   end
+end
+
+-- nodoc
+function lib.pathDir(...)
+  return lib.deprecation('lub', 'pathDir', 'dir', ...)
 end
 
 -- Return an absolute path from a `path` and optional `basepath`. If basepath is
@@ -501,7 +507,7 @@ function private.makePathPart(path, fullpath)
   elseif file_type == 'directory' then
     return -- done
   else
-    local base = lib.pathDir(path)
+    local base = lib.dir(path)
     private.makePathPart(base, fullpath)
     -- base should exist or an error has been raised
     lfs.mkdir(path)
