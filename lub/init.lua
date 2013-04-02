@@ -1,8 +1,8 @@
 --[[--------------------
   # Lubyk base module
 
-  This module contains the core parts for lubyk (documentation generator,
-  scheduler, testing).
+  Currently, this module contains a documentation generator, templates and
+  testing facilities.
 
 --]]--------------------
 local private = {}
@@ -512,7 +512,10 @@ end
 -- We only enable autoload once all is loaded so that the 'Autoload' class finds
 -- 'lub' library.
 package.loaded.lub = lib
+
+-- nodoc
 lib.Autoload = require 'lub.Autoload'
+
 lib.Autoload('lub', lib)
 
 
