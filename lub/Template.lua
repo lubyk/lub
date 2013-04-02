@@ -27,7 +27,8 @@
     --> Hello Joe.
     --> Your parent is Eve.
 --]]------------------------------------------------------
-local lib     = class 'lub.Template'
+local lub     = require 'lub'
+local lib     = lub.class 'lub.Template'
 local private = {}
 
 -- Create a new template object ready to produce output by calling #run. The
@@ -56,6 +57,7 @@ end
 -- Returns resulting text by runngint the template with an environment table
 -- `env`.
 function lib:run(env)
+  env = env or {}
   local buffer_ = ''
   function env._out_(str)
     buffer_ = buffer_ .. (str or '')

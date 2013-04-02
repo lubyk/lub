@@ -12,31 +12,8 @@ local match = string.match
 local len   = string.len
 
 local CALL_TO_NEW = {__call = function(lib, ...) return lib.new(...) end}
-function class(class_name, tbl)
-  local lib = tbl or {}
-  lib.type = class_name
-  lib.__index = lib
 
-  -- Do not add class to namespace automatically
-  
-  -- local base, klass = match(class_name, '^(.+)%.(.+)$')
-  -- klass = klass or class_name
-
-  -- if base and _G[base] then
-  --   _G[base][klass] = lib
-  -- end
-
-  return setmetatable(lib, CALL_TO_NEW)
-end
-
--- Declare global
-Autoload = require 'lub.Autoload'
-local lib = Autoload('lub')
--- Declare global
-lub = lib
-
--- autoload stuff in _G
--- lib.Autoload.global()
+local lib = {}
 
 --[[------------------------------------------------------
 
@@ -49,6 +26,30 @@ lub = lib
 --
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
+
+-- # Class management
+--
+-- Declare a new class with the following conventions:
+--
+-- * The `.type` field contains the full class name.
+-- * The returned table is the metatable for all instances of this class and
+--   contains the functions.
+-- * Calling the table with `foo.Bar()` is an alias for a call to
+--   `foo.Bar.new`.
+--
+-- Usage:
+--
+--   local lub = require 'lub'
+--   local lib = lub.class 'lub.Doc'
+--   -- ...
+--   return lib
+function lib.class(class_name, tbl)
+  local lib = tbl or {}
+  lib.type = class_name
+  lib.__index = lib
+
+  return setmetatable(lib, CALL_TO_NEW)
+end
 
 -- # Filesystem
 
@@ -78,9 +79,9 @@ end
 local function scriptDir(level)
   local level = level or 0
   local file = scriptPath(level - 1)
-  assert(file, "Cannot use scriptDir here because of a tail call optimization.")
+  assert(file, "Cannot use scriptDir here because of a tail call optimization.\n"..debug.traceback())
   if match(file, '/') then
-    local p = gsub(scriptPath(level - 1), '/[^/]+$', '')
+    local p = gsub(file, '/[^/]+$', '')
     return p
   else
     return '.'
@@ -101,16 +102,22 @@ end
 --   print(lub.path '|..')
 --   --> parent of script directory
 --
-function lib.path(path)
+function lib.path(path, level)
+  level = level or 2
   local chr = sub(path, 1, 1)
-  if chr == '|' then
-    local b = scriptDir(-1)
+  if chr == '|' or chr == '&' then
+    local src = debug.getinfo(level).source
+    if src == '=(tail call)' then
+      src = debug.getinfo(level + 1).source
+    end
+    local s = match(src, '^@(.*)$')
+    if chr == '&' then
+      return s
+    end
+    local b = lib.pathDir(s)
     if len(path) == 1 then return b end
     local r = sub(path, 2, -1)
     return lib.absolutizePath(b..'/'..r)
-  elseif chr == '&' then
-    -- tail call optimization => 0, not -1
-    return scriptPath(0)
   else
     return lib.absolutizePath(path)
   end
@@ -414,15 +421,19 @@ local orig_req = require
 -- Print calls to `require`. This can be used to list all code dependencies.
 -- Usage:
 --
---   lub.traceRequire()
+--   lub.traceRequire(true)
 --   -- From now on, all require statements are printed.
 -- 
 -- If you simply want to make sure no require is not called to autoload code
 -- after some point, you should use [Autoload.strict](Autoload.html#strict).
-function lib.traceRequire()
-  require = function(path)
-    print("require '"..path.."'")
-    return orig_req(path)
+function lib.traceRequire(enable)
+  if enable then
+    require = function(path)
+      print("require '"..path.."'")
+      return orig_req(path)
+    end
+  else
+    require = orig_req
   end
 end
 
@@ -433,12 +444,16 @@ end
 --   lub.log('foo')
 --   --> lub/util.lua:426:  foo
 function lib.log(...)
-  local trace = lib.split(debug.traceback(), '\n\t')[3]
-  local file, line = match(trace, '^([^:]+):([^:]+):')
+  local trace = lib.split(debug.traceback(), '\n\t')
+  local part = trace[3]
+  if part:match('%(tail call%)') then
+    part = trace[4]
+  end
+  local file, line = match(part, '^([^:]+):([^:]+):')
   if file and line then
     print(string.format('%s:%i:', file, line), ...)
   else
-    print(trace, ...)
+    print(part, ...)
   end
 end
 
@@ -461,13 +476,11 @@ function lib.deprecation(lib_name, old, new, ...)
   local arg = ...
   if arg then
     print(string.format("[DEPRECATION] %s\n\t'%s.%s' is deprecated. Please use '%s.%s' instead.", trace, lib_name, old, lib_name, new))
-    return _G[lib_name][new](...)
+    return package.loaded[lib_name][new](...)
   else
     print(string.format("[DEPRECATION] %s\n\t'%s.%s' is deprecated and will be removed. Please use '%s' instead.", trace, lib_name, old, new))
   end
 end
-
-lib.print = print
 
 -- Quote string `str` so that it can be inserted in a shell command. Example:
 --
@@ -491,6 +504,13 @@ function private.makePathPart(path, fullpath)
     -- done
   end
 end
+
+-- We only enable autoload once all is loaded so that the 'Autoload' class finds
+-- 'lub' library.
+package.loaded.lub = lib
+lib.Autoload = require 'lub.Autoload'
+lib.Autoload('lub', lib)
+
 
 -- # Classes
 --

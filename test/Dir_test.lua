@@ -33,6 +33,7 @@ function should.listFiles()
     'Test_test.lua',
     'all.lua',
     'fixtures',
+    'lub_test.lua',
   }, list)
 end
 

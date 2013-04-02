@@ -6,7 +6,10 @@
   'lfs' (lua filesystem).
 
 --]]------------------------------------------------------
-local lib = class('lk.Dir', {
+local lub = require 'lub'
+local lfs = require 'lfs'
+
+local lib = lub.class('lk.Dir', {
   sep = '/',
   ignore_pattern = '^[.]'
 })
@@ -14,7 +17,6 @@ local lib = class('lk.Dir', {
 -- ## Dependencies
 --
 -- * lfs
-local lfs = require 'lfs'
 
 -- # Class functions
 

@@ -7,7 +7,8 @@
   cannot be found, generates an error.
   
 --]]------------------------------------------------------
-local lib  = class 'lub.Autoload'
+local lub  = require 'lub'
+local lib  = lub.class 'lub.Autoload'
 local lib2 = {}
 local private = {}
 

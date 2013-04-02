@@ -5,6 +5,7 @@ lub.Doc.make {
     'lub',
     -- {'modules/four/doc/examples', prepend='tutorial/four'},
   },
+  reject = '_assets.lua$',
   copy   = {
   --  'doc',
   },

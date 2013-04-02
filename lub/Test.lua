@@ -5,14 +5,13 @@
   by class or module.
 
 --]]------------------------------------------------------
-local lib     = class 'lub.Test'
+local debug   = require 'debug'
+local lub     = require 'lub'
+local lib     = lub.class 'lub.Test'
 local private = {}
--- Dummy scheduler until we really need one and lub.Scheduler works.
-local sched   = {}
 
 -- Currently running test.
 local current = nil
-require 'debug'
 
 -- Create a new test suite. It is good practice to use 'should' as
 -- local name for this suite since it makes tests more readable. The
@@ -30,9 +29,11 @@ require 'debug'
 -- The optional `options` table can contain the following keys to alter testing
 -- behavior:
 --
--- + `coverage`: if set to false, untested functions will not be reported. If
---               `lub.Test.mock` contains a string, this will be used as the
---               body of missing tests and outputed.
+-- + `coverage` : if set to false, untested functions will not be reported. If
+--                `lub.Test.mock` contains a string, this will be used as the
+--                body of missing tests and outputed.
+-- + `metatable`: the metatable for the class being tested if it cannot be 
+--                found in global namespace.
 function lib.new(name, options)
   options = options or {}
   local self = {
@@ -156,13 +157,10 @@ function lib:test(batch)
   lib.total_count = 0
   lib.total_asrt  = 0
   lib.total_fail  = 0
-  sched:run(function()
-    private.runSuite(self)
-    private.reportSuite(self)
-    private.report()
 
-    sched:quit()
-  end)
+  private.runSuite(self)
+  private.reportSuite(self)
+  private.report()
 end
 
 -- # Batch testing
@@ -387,11 +385,25 @@ end
 function private:runSuite()
   if self._info.coverage then
     -- Make sure all functions are called at least once.
-    local parent, meta = _G, _G
-    for _, part in ipairs(lub.split(self._info.name, '%.')) do
-      parent = meta
-      meta   = meta[part]
-      if not meta then break end
+    local meta = self._info.metatable
+    if not meta then
+      local parent
+      parent, meta = _G, _G
+      for _, part in ipairs(lub.split(self._info.name, '%.')) do
+        parent = meta
+        meta   = meta[part]
+        if not meta then break end
+      end
+    end
+    if not meta then
+      -- try in package.loaded
+      local parent
+      parent, meta = package.loaded, package.loaded
+      for _, part in ipairs(lub.split(self._info.name, '%.')) do
+        parent = meta
+        meta   = meta[part]
+        if not meta then break end
+      end
     end
     _G.assert(meta, string.format("Testing coverage but '%s' metatable not found.", self._info.name))
 
@@ -470,7 +482,9 @@ function private:runSuite()
       if lib.verbose then
         printf("%-12s Run %s", '['..current.name..']', name)
       end
-      local ok, err = sched:pcall(pass_args)
+      -- Enable sched:pcall when we need yield in testing. For now,
+      -- turn this off.
+      local ok, err = pcall(pass_args)
       if lib.verbose then
         printf("%s %s", ok and 'OK' or 'FAIL', err or '')
       end
@@ -543,17 +557,14 @@ function private.testAll()
   lib.total_count = 0
   lib.total_asrt = 0
   lib.total_fail = 0
-  sched:run(function()
-    for i, suite in ipairs(lib.suites) do
-      private.runSuite(suite)
-      private.reportSuite(suite)
-      if lib.abort then
-        break
-      end
+  for i, suite in ipairs(lib.suites) do
+    private.runSuite(suite)
+    private.reportSuite(suite)
+    if lib.abort then
+      break
     end
-    private.report()
-    sched:quit()
-  end)
+  end
+  private.report()
 end
 
 -- Report summary for all tests.
@@ -587,20 +598,6 @@ function private.report()
     end
   end
   print('')
-end
-
-
---=============================================== DUMMY Scheduler
-function sched:run(func)
-  func()
-end
-
-function sched:quit()
-  -- noop
-end
-
-function sched:pcall(...)
-  return pcall(...)
 end
 
 return lib

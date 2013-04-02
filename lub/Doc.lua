@@ -138,7 +138,6 @@ local ATTRIBS = { -- doc
   phone = {default = '', format = '000 000 00 00'},
 }
 
-
 --[[
 
   # Preamble
@@ -289,7 +288,9 @@ local ATTRIBS = { -- doc
   WARN This is a warning.
 
 --]]------------------------------------------------------
-local lib     = class 'lub.Doc'
+-- Dependencies
+local lub     = require 'lub'
+local lib     = lub.class 'lub.Doc'
 local private = {}
 local parser  = {}
 local CODE = '§§'
@@ -299,9 +300,14 @@ local DEFAULT_FOOTER = [[ made with <a href='http://doc.lubyk.org/lub.Doc.html'>
 local gsub  = string.gsub
 local match = string.match
 
--- Dependencies
-local lub = require 'lub'
-
+-- nodoc
+lib.ASSETS =  {
+  'css/bootstrap.min.css',
+  'css/docs.css',
+  'img/glyphicons-halflings-white.png', 
+  'img/glyphicons-halflings.png',
+  'js/bootstrap.min.js',
+}
 
 -- # Class functions
 
@@ -1498,13 +1504,7 @@ end
 
 function private.copyAssets.html(target)
   local src_base = lub.path '|'
-  for _, path in ipairs {
-    'css/bootstrap.css',
-    'css/docs.css',
-    'img/glyphicons-halflings-white.png', 
-    'img/glyphicons-halflings.png',
-    'js/bootstrap.min.js',
-  } do
+  for _, path in ipairs(lib.ASSETS) do
     local src = src_base .. '/doc/' .. path
     local trg = target .. '/' .. path
     lub.writeall(trg, lub.content(src))
