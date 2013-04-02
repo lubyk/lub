@@ -1,9 +1,9 @@
 --- This file is part of Lubyk project
 
 name = "Lub"
-version = "1.0"
+version = "1.0.0"
 
-desc = "Lubyk base module (doc generator, template, testing)"
+desc = "Lubyk base module (autoload, template, helpers)"
 author = "Gaspard Bucher"
 license = "MIT"
 url = "http://lubyk.org"

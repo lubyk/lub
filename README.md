@@ -1,7 +1,7 @@
 lub
 ===
 
-Lubyk core library (provides documentation generation from lua code, testing, autoloading, etc).
+Lubyk core library (provides autoloading, helpers).
 
 [Documentation](http://doc.lubyk.org/lub.html).
 

@@ -6,9 +6,9 @@
   ...
 
 --]]------------------------------------------------------
-require 'lub'
+require 'lut'
 
-local should = lub.Test 'lub.Dir'
+local should = lut.Test 'lub.Dir'
 
 function should.listFilesMatchingPattern()
   local dir = lub.Dir(lub.path '|')
@@ -28,9 +28,7 @@ function should.listFiles()
 
   assertValueEqual({
     'Dir_test.lua',
-    'Doc_test.lua',
     'Template_test.lua',
-    'Test_test.lua',
     'all.lua',
     'fixtures',
     'lub_test.lua',

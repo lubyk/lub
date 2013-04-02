@@ -1,0 +1,38 @@
+{% mod = lub %}
+package = "Lub"
+version = "{{mod.VERSION}}-1"
+source = {
+   url = "http://lubyk.org/archive/REL-{{mod.VERSION}}.tar.gz",
+   dir = '{{mod.type}}-REL-{{mod.VERSION}}',
+}
+description = {
+   summary = "Lubyk base module.",
+   detailed = [[
+      lub: helper code, class declaration.
+
+      lub.Autoload: autoloading classes in modules.
+
+      lub.Dir: a simple directory traversal class.
+
+      lub.Template: a simple templating class.
+   ]],
+   --   lub.Test: A simple yet powerful unit testing framework.
+   homepage = "http://lubyk.org",
+   license = "MIT"
+}
+dependencies = {
+   "lua ~> 5.1",
+   "luafilesystem >= 1.5.0",
+}
+build = {
+  type = 'builtin',
+  modules = {
+{% for file in lfs.dir(mod.type) do %}
+{% if file == 'init.lua' then %}
+    ['{{mod.type}}'         ] = '{{mod.type}}/init.lua',
+{% elseif file:match('.lua$') then file = file:sub(1, -5) %}
+    ['{{mod.type}}.{{file}}'] = '{{mod.type}}/{{file}}.lua',
+{% end %}
+{% end %}
+  },
+}

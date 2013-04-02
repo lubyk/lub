@@ -3,9 +3,9 @@
   lub.Template test
 
 --]]------------------------------------------------------
-require 'lub'
+require 'lut'
 -- Run the test with the lub directory as current path.
-local should = lub.Test 'lub.Template'
+local should = lut.Test 'lub.Template'
 
 --=============================================== TESTS
 function should.autoload()

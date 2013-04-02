@@ -3,7 +3,7 @@
 name = "Lub"
 version = "{{lub.VERSION}}"
 
-desc = "Lubyk base module (doc generator, template, testing)"
+desc = "Lubyk base module (autoload, template, helpers)"
 author = "Gaspard Bucher"
 license = "MIT"
 url = "http://lubyk.org"

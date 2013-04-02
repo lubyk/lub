@@ -12,3 +12,4 @@ install(DIRECTORY lub
 install_data ( README.md LICENSE )
 
 # install_example ( examples/ )
+

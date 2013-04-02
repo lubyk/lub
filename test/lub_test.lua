@@ -1,5 +1,5 @@
-require 'lub'
-local should = lub.Test 'lub'
+require 'lut'
+local should = lut.Test 'lub'
 
 function should.readAll()
   local p = lub.path '|fixtures/io.txt'
@@ -155,7 +155,7 @@ function should.provideFile()
 end
 
 function should.testFileExistence()
-  assertEqual('file', lub.fileType(lub.path('|fixtures/doc/bar/Bam.lua')))
+  assertEqual('file', lub.fileType(lub.path('|fixtures/io.txt')))
   assertEqual(nil, lub.fileType(lub.path('|docbad')))
   assertEqual('directory', lub.fileType(lub.path '|'))
   assertEqual(nil, lub.fileType(nil))

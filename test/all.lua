@@ -1,4 +1,4 @@
-require 'lub'
+require 'lut'
 
-lub.Test.files(lub.path '|')
+lut.Test.files(lub.path '|')
 

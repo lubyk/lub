@@ -18,14 +18,14 @@ local private = {}
 function lib.new(prefix, tbl)
   assert(prefix, 'Missing prefix in Autoload call.')
   local self = tbl or {}
-  self.prefix = prefix
+  self.type = prefix
   return setmetatable(self, lib)
 end
 
 -- nodoc
 function lib.__index(table, name)
   -- Trying to load new lib like foo.Bar
-  local ok, new_lib_or_error = pcall(function() return require(table.prefix..'.'..name); end)
+  local ok, new_lib_or_error = pcall(function() return require(table.type..'.'..name); end)
   if ok then
     -- insert new class with name in table
     table[name] = new_lib_or_error

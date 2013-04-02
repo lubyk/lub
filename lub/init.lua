@@ -1,8 +1,8 @@
 --[[--------------------
   # Lubyk base module
 
-  Currently, this module contains a documentation generator, templates and
-  testing facilities.
+  Currently, this module contains a core functions (code loading, templates, 
+  helpers).
 
 --]]--------------------
 local private = {}
@@ -30,7 +30,7 @@ local lfs = require 'lfs'
 
 -- Current version for 'lub' module. Minor version numbers are never released
 -- and are used during development.
-lib.VERSION = '1.1'
+lib.VERSION = '1.0.0'
 
 -- # Class management
 --
