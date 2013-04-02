@@ -1,7 +1,8 @@
+{% mod = require 'lub' %}
 --- This file is part of Lubyk project
 
 name = "Lub"
-version = "{{lub.VERSION}}"
+version = "{{mod.VERSION}}"
 
 desc = "Lubyk base module (autoload, template, helpers)"
 author = "Gaspard Bucher"
