@@ -27,8 +27,9 @@ local lib = {}
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
 
--- Current version for 'lub' module.
-lib.VERSION = '1.0'
+-- Current version for 'lub' module. Minor version numbers are never released
+-- and are used during development.
+lib.VERSION = '1.1'
 
 -- # Class management
 --
