@@ -20,11 +20,15 @@ local current = nil
 --
 -- Usage example:
 --
---   local should = lub.Test 'lub.Dir'
+--   local should = lub.Test 'animal.Dog'
 --
---   function should.listFilesInDirectory()
---     -- ...
+--   function should.bark()
+--     local medor = animal.Dog('Medor')
+--     assertEqual('Wouaf!', medor:bark())
 --   end
+--
+--   -- test files must end with this line
+--   should:test()
 -- 
 -- The optional `options` table can contain the following keys to alter testing
 -- behavior:
