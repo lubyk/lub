@@ -1,4 +1,6 @@
 lub
 ===
 
-Lubyk core scheduler and memory management.
+Lubyk core library (provides documentation generation from lua code, testing, autoloading, etc).
+
+[Documentation](http://doc.lubyk.org/lub.html).

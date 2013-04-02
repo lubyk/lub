@@ -27,6 +27,9 @@ local lib = {}
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
 
+-- Current version for 'lub' module.
+lib.VERSION = '1.0'
+
 -- # Class management
 --
 -- Declare a new class with the following conventions:
