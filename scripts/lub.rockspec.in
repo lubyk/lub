@@ -1,0 +1,43 @@
+package = "Lub"
+version = "{{lub.VERSION}}-1"
+source = {
+   url = "http://..." -- We don't have one yet
+}
+description = {
+   summary = "Lubyk base module (doc generator, template, testing)",
+   detailed = [[
+      lub.Doc: a powerful documentation generator for Lua code with support for
+      litterate programming, cross-reference linking, images, latex math, etc.
+      
+      lub.Dir: a simple directory traversal class.
+
+      lub.Template: a simple templating class.
+   ]],
+   --   lub.Test: A simple yet powerful unit testing framework.
+   homepage = "http://lubyk.org",
+   license = "MIT"
+}
+dependencies = {
+   "lua ~> 5.1",
+   "luafilesystem >= 1.5.0",
+}
+build = {
+  type = 'builtin',
+  modules = {
+{% for file in lfs.dir('lub') do %}
+{% if file == 'init.lua' then %}
+    ['lub'         ] = 'lub/init.lua',
+{% elseif file:match('.lua$') then file = file:sub(1, -5) %}
+    ['lub.{{file}}'] = 'lub/{{file}}.lua',
+{% end %}
+{% end %}
+  },
+  install = {
+    lua = {
+      ['lub.doc.template'] = 'lub/doc/template.html',
+{% for _, path in ipairs(lub.Doc.ASSETS) do %}
+      ['lub.doc.{{path:gsub('[.]', '_'):gsub('/', '.')}}'] = 'lub/doc/{{path}}',
+{% end %}
+    },
+  }
+}

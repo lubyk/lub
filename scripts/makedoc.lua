@@ -1,13 +1,7 @@
-package.path = package.path .. ';./?/init.lua'
-require 'lub'
+local lub = require 'lub'
 lub.Doc.make {
   sources = {
     'lub',
-    -- {'modules/four/doc/examples', prepend='tutorial/four'},
-  },
-  reject = '_assets.lua$',
-  copy   = {
-  --  'doc',
   },
   head   = '<meta name="google-site-verification" content="p1ZrKNheIo5xMhrMOo9MxKaY2hL9LlyuPYyRnEl2QuM" />',
   target = 'doc',
@@ -21,5 +15,3 @@ lub.Doc.make {
 --]]--
 ]=]
 }
-
--- TODO: use commit and stamp information arg[1], arg[2] in footer.
