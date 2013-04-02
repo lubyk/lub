@@ -16,10 +16,11 @@ local current = nil
 -- Create a new test suite. It is good practice to use 'should' as
 -- local name for this suite since it makes tests more readable. The
 -- `name` should be the exact name of the class or module being tested
--- in case the coverage option is activated in test (it is ON by default).
+-- in case the coverage option is activated in test (it is *on* by default).
 --
--- Usage example:
+-- Full test file example:
 --
+--   require 'lub'
 --   local should = lub.Test 'animal.Dog'
 --
 --   function should.bark()
@@ -27,7 +28,7 @@ local current = nil
 --     assertEqual('Wouaf!', medor:bark())
 --   end
 --
---   -- test files must end with this line
+--   -- Test files must end with this line
 --   should:test()
 -- 
 -- The optional `options` table can contain the following keys to alter testing
