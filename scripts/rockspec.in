@@ -2,7 +2,7 @@
 package = "Lub"
 version = "{{mod.VERSION}}-1"
 source = {
-   url = "http://lubyk.org/archive/REL-{{mod.VERSION}}.tar.gz",
+   url = "http://lubyk.org/archive/{{mod.type}}-REL-{{mod.VERSION}}.tar.gz",
    dir = '{{mod.type}}-REL-{{mod.VERSION}}',
 }
 description = {
