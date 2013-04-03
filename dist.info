@@ -1,6 +1,6 @@
 --- This file is part of Lubyk project
 
-name = "Lub"
+name = "lub"
 version = "1.0.0"
 
 desc = "Lubyk base module (autoload, template, helpers)"
@@ -10,6 +10,6 @@ url = "http://lubyk.org"
 maintainer = "Gaspard Bucher"
 
 depends = {
-	"lua ~> 5.1",
+  "lua ~> 5.1",
   "luafilesystem >= 1.5.0",
 }
