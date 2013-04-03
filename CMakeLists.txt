@@ -7,7 +7,7 @@ include ( lua )
 
 install (
   DIRECTORY lub/
-  DESTINATION ${INSTALL_LMOD}/lub 
+  DESTINATION ${INSTALL_LMOD}/lub
   COMPONENT Runtime
 )
 
