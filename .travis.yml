@@ -35,7 +35,7 @@ before_script:
 
 # Build the module
 script:
-  - ~/_tools/travis/travis build && ~/lubyk/lub/_test/bin/lua test/all.lua
+  - ~/_tools/travis/travis build && ~/build/lubyk/lub/_test/bin/lua test/all.lua
 
 # Execute additional tests or commands
 after_script:
