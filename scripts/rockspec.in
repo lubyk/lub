@@ -1,37 +1,35 @@
 {% mod = lub %}
-package = "Lub"
+package = "{{mod.type}}"
 version = "{{mod.VERSION}}-1"
 source = {
-   url = "http://lubyk.org/archive/{{mod.type}}-REL-{{mod.VERSION}}.tar.gz",
-   dir = '{{mod.type}}-REL-{{mod.VERSION}}',
+  url = "http://lubyk.org/archive/{{mod.type}}-REL-{{mod.VERSION}}.tar.gz",
+  dir = '{{mod.type}}-REL-{{mod.VERSION}}',
 }
 description = {
-   summary = "Lubyk base module.",
-   detailed = [[
-      lub: helper code, class declaration.
+  summary = "Lubyk base module.",
+  detailed = [[
+    lub: helper code, class declaration.
 
-      lub.Autoload: autoloading classes in modules.
+    lub.Autoload: autoloading classes in modules.
 
-      lub.Dir: a simple directory traversal class.
+    lub.Dir: a simple directory traversal class.
 
-      lub.Template: a simple templating class.
-   ]],
-   --   lub.Test: A simple yet powerful unit testing framework.
-   homepage = "http://lubyk.org",
-   license = "MIT"
+    lub.Template: a simple templating class.
+  ]],
+  homepage = "http://lubyk.org",
+  license = "MIT"
 }
 dependencies = {
-   "lua ~> 5.1",
-   "luafilesystem >= 1.5.0",
+  "lua >= 5.1, < 5.3",
+  "luafilesystem >= 1.5.0",
 }
 build = {
   type = 'builtin',
   modules = {
+    {{string.format("[%-17s] = '%s/%s.lua'", "'"..mod.type.."'", mod.type, 'init')}},
 {% for file in lfs.dir(mod.type) do %}
-{% if file == 'init.lua' then %}
-    ['{{mod.type}}'         ] = '{{mod.type}}/init.lua',
-{% elseif file:match('.lua$') then file = file:sub(1, -5) %}
-    ['{{mod.type}}.{{file}}'] = '{{mod.type}}/{{file}}.lua',
+{% if file ~= 'init.lua' and file:match('.lua$') then file = file:sub(1, -5) %}
+    {{string.format("[%-17s] = '%s/%s.lua'", "'"..mod.type..'.'..file.."'", mod.type, file)}},
 {% end %}
 {% end %}
   },
