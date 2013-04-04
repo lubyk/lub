@@ -29,6 +29,7 @@
 --]]------------------------------------------------------
 local lub     = require 'lub'
 local lib     = lub.class 'lub.Template'
+local NO_FENV = not rawget(_G, 'setfenv')
 local private = {}
 
 -- Create a new template object ready to produce output by calling #run. The
@@ -45,12 +46,7 @@ function lib.new(source)
     file:close()
   end
   setmetatable(self, lib)
-  self.lua = private.parse(self, self.source)
-  self.func, self.err = loadstring(self.lua)
-  if self.err then
-    print(self.err)
-    assert(false, self.err)
-  end
+  private.makeFunction(self, source)
   return self
 end
 
@@ -66,17 +62,37 @@ function lib:run(env)
     buffer_ = buffer_ .. indent .. string.gsub(str, '\n', indent)
   end
   setmetatable(env, {__index = _G})
-  setfenv(self.func, env)
-  self.func()
+  local ok, err = pcall(function() self.func(env) end)
+  if not ok then
+    print(self.lua)
+    assert(false, err)
+  end
   return buffer_
 end
+
+function private:makeFunction(source)
+  local res = 'local function _fun_(env)\n'
+  if NO_FENV then
+    res = res..'  local _ENV = env\n'
+  else
+    res = res..'  setfenv(1, env)\n'
+  end
+  self.lua = res..private.parse(self, source)..'\nend\nreturn _fun_'
+  self.func, self.err = loadstring(self.lua)
+  if self.err then
+    print(self.lua)
+    assert(false, self.err)
+  end
+  -- We compile as a function so that we can pass 'env' as parameter.
+  self.func = self.func()
+end  
   
 -- (internal). Return Lua code from the template string. The generated code
 -- outputs content by calling `env._out_` function.
 function private:parse(source)
   local res = ''
+
   local eat_next_newline
-  --for text, block in string.gmatch(tmpl, "([^{]-)(%b{})") do
   -- Find balanced {
   for text, block in string.gmatch(source .. '{{}}', '([^{]-)(%b{})') do
     if text ~= '' then
@@ -110,7 +126,7 @@ function private:parse(source)
       text = text .. '{'
       block_text = private.parse(self, string.sub(block, 2, -1))
     end
-    if text then
+    if text and text ~= '' then
       res = res .. string.format("_out_([=[%s]=])\n", text) .. block_text
     else
       res = res .. block_text

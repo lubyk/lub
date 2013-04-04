@@ -1,13 +1,10 @@
 --[[------------------------------------------------------
 
-  lk.Dir test
-  --------
-
-  ...
+  # lub.Dir test
 
 --]]------------------------------------------------------
-require 'lut'
-
+local lub    = require 'lub'
+local lut    = require 'lut'
 local should = lut.Test 'lub.Dir'
 
 function should.listFilesMatchingPattern()

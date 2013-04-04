@@ -10,11 +10,11 @@ local gsub  = string.gsub
 local sub   = string.sub
 local match = string.match
 local len   = string.len
+local TAIL_CALL = rawget(_G, 'setfenv') and '%(tail call%)' or '%(%.%.%.tail calls%.%.%.%)'
 
 local CALL_TO_NEW = {__call = function(lib, ...) return lib.new(...) end}
 
 local lib = {}
-lub = lib
 
 --[[------------------------------------------------------
 
@@ -28,9 +28,9 @@ lub = lib
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
 
--- Current version for 'lub' module. Minor version numbers are never released
--- and are used during development.
-lib.VERSION = '1.0.0'
+-- Current version for 'lub' module. Odd minor version numbers are never
+-- released and are used during development.
+lib.VERSION = '1.0.2'
 
 -- # Class management
 --
@@ -112,7 +112,7 @@ function lib.path(path, level)
   local chr = sub(path, 1, 1)
   if chr == '|' or chr == '&' then
     local src = debug.getinfo(level).source
-    if src == '=(tail call)' then
+    if src == TAIL_CALL then
       src = debug.getinfo(level + 1).source
     end
     local s = match(src, '^@(.*)$')
@@ -456,7 +456,7 @@ end
 function lib.log(...)
   local trace = lib.split(debug.traceback(), '\n\t')
   local part = trace[3]
-  if part:match('%(tail call%)') then
+  if part:match(TAIL_CALL) then
     part = trace[4]
   end
   local file, line = match(part, '^([^:]+):([^:]+):')

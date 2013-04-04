@@ -1,10 +1,10 @@
 --[[------------------------------------------------------
 
-  lub.Template test
+  # lub.Template test
 
 --]]------------------------------------------------------
-require 'lut'
--- Run the test with the lub directory as current path.
+local lub    = require 'lub'
+local lut    = require 'lut'
 local should = lut.Test 'lub.Template'
 
 --=============================================== TESTS

@@ -1,4 +1,10 @@
-require 'lut'
+--[[------------------------------------------------------
+
+  # lub test
+
+--]]------------------------------------------------------
+local lub    = require 'lub'
+local lut    = require 'lut'
 local should = lut.Test 'lub'
 
 function should.readAll()
