@@ -112,7 +112,7 @@ function lib.path(path, level)
   local chr = sub(path, 1, 1)
   if chr == '|' or chr == '&' then
     local src = debug.getinfo(level).source
-    if src == TAIL_CALL then
+    if src:match(TAIL_CALL) then
       src = debug.getinfo(level + 1).source
     end
     local s = match(src, '^@(.*)$')
