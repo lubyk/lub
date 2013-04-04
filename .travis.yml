@@ -23,7 +23,7 @@ matrix:
 # Install dependencies
 install:
   - git clone git://github.com/LuaDist/Tools.git ~/_tools
-  # For testing
+  # For testing "lub" depends on "lut"
   - git clone git://github.com/lubyk/lut.git ~/_lut
   - ln -sf ~/_lut/lut lut
   - ln -sf ~/_lut/lut/init.lua lut.lua
@@ -50,7 +50,6 @@ branches:
 notifications:
   recipients:
     - gaspard@teti.ch
-    #- luadist-dev@googlegroups.com
   email:
     on_success: change
     on_failure: always
