@@ -23,6 +23,10 @@ matrix:
 # Install dependencies
 install:
   - git clone git://github.com/LuaDist/Tools.git ~/_tools
+  # For testing
+  - git clone git://github.com/lubyk/lut.git ~/_lut
+  - ln -sf ~/_lut/lut lut
+  - ln -sf ~/_lut/lut/init.lua lut.lua
   - ~/_tools/travis/travis install
 
 # Bootstap
@@ -35,7 +39,7 @@ script:
 
 # Execute additional tests or commands
 after_script:
-  - ~/_tools/travis/travis test
+  - lua test/all.lua
 
 # Only watch the master branch
 branches:
@@ -45,7 +49,8 @@ branches:
 # Notify the LuaDist Dev group if needed
 notifications:
   recipients:
-    - luadist-dev@googlegroups.com
+    - gaspard@teti.ch
+    #- luadist-dev@googlegroups.com
   email:
     on_success: change
     on_failure: always
