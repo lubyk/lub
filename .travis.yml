@@ -35,11 +35,11 @@ before_script:
 
 # Build the module
 script:
-  - ~/_tools/travis/travis build
+  - ~/_tools/travis/travis build && ~/_test/bin/lua test/all.lua
 
 # Execute additional tests or commands
 after_script:
-  - lua test/all.lua
+  - ~/_tools/travis/travis test
 
 # Only watch the master branch
 branches:
