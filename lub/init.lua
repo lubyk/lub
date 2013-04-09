@@ -1,8 +1,13 @@
 --[[--------------------
   # Lubyk base module
 
-  Currently, this module contains a core functions (code loading, templates, 
+  Currently, this module contains core functions (code loading, templates, 
   helpers).
+
+  This module is part of [lubyk](http://lubyk.org) project.  
+  Install with [luarocks](http://luarocks.org) or [luadist](http://luadist.org).
+
+    $ luarocks install lub    or    luadist install lub
 
 --]]--------------------
 local private = {}

@@ -14,9 +14,9 @@ description = {
 
     lub.Dir: a simple directory traversal class.
 
-    lub.Template: a simple templating class.
+    lub.Template: a simple templating class that uses {{moustache}} like syntax.
   ]],
-  homepage = "http://lubyk.org",
+  homepage = "http://doc.lubyk.org/{{mod.type}}.html",
   license = "MIT"
 }
 dependencies = {

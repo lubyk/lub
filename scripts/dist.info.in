@@ -7,7 +7,7 @@ version = "{{mod.VERSION}}"
 desc = "Lubyk base module (autoload, template, helpers)"
 author = "Gaspard Bucher"
 license = "MIT"
-url = "http://lubyk.org"
+url = "http://doc.lubyk.org/{{mod.type}}.html"
 maintainer = "Gaspard Bucher"
 
 depends = {

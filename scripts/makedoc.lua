@@ -3,7 +3,7 @@ lut.Doc.make {
   sources = {
     'lub',
   },
-  target = 'doc',
+  target = 'html',
   format = 'html',
   header = [[<h1><a href='http://doc.lubyk.org'>Lubyk documentation</a></h1></a> ]],
   index  = [=[
