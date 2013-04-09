@@ -11,6 +11,6 @@ url = "http://doc.lubyk.org/{{mod.type}}.html"
 maintainer = "Gaspard Bucher"
 
 depends = {
-  "lua ~> 5.1",
+  "lua >= 5.1, < 5.3",
   "luafilesystem >= 1.5.0",
 }
