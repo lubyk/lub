@@ -39,7 +39,7 @@ local lib = {}
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
 -- + lub.core: lub.Poller, lub.Thread, lub.plat
-local core = require 'lub.core'
+-- local core = require 'lub.core'
 
 -- Current version respecting [semantic versioning](http://semver.org).
 lib.VERSION = '1.0.3 - pre'
