@@ -4,17 +4,23 @@
   Currently, this module contains core functions (code loading, templates, 
   helpers).
 
-  This module is part of [lubyk](http://lubyk.org) project.  
-  Install with [luarocks](http://luarocks.org) or [luadist](http://luadist.org).
+  This module is part of the [lubyk](http://lubyk.org) project. *MIT license*
+  &copy; Gaspard Bucher 2014.
 
-    $ luarocks install lub    or    luadist install lub
+  ## Installation
+  
+  With [luarocks](http://luarocks.org):
+
+    $ luarocks install lub
+  
+  With [luadist](http://luadist.org):
+
+    $ luadist install lub
 
 --]]--------------------
 local private = {}
-local gsub  = string.gsub
-local sub   = string.sub
-local match = string.match
-local len   = string.len
+local gsub,        sub,        match,        len,        pairs, ipairs =
+      string.gsub, string.sub, string.match, string.len, pairs, ipairs
 local TAIL_CALL = rawget(_G, 'setfenv') and '%(tail call%)' or '%(%.%.%.tail calls%.%.%.%)'
 
 local CALL_TO_NEW = {__call = function(lib, ...) return lib.new(...) end}
@@ -32,10 +38,14 @@ local lib = {}
 --
 -- + lfs: luafilesystem
 local lfs = require 'lfs'
+-- + lub.core: lub.Poller, lub.Thread, lub.plat
+local core = require 'lub.core'
 
--- Current version for 'lub' module. Odd minor version numbers are never
--- released and are used during development.
-lib.VERSION = '1.0.2'
+-- Current version respecting [semantic versioning](http://semver.org).
+lib.VERSION = '1.0.3 - pre'
+
+-- FIXME
+-- lib.plat = core.plat()
 
 -- # Class management
 --
@@ -60,6 +70,142 @@ function lib.class(class_name, tbl)
 
   return setmetatable(lib, CALL_TO_NEW)
 end
+
+-- # Algorithm
+
+-- Search a tree using lua function for node testing or collecting. This method
+-- is an alias for #BFS.
+--
+-- Optional argument `max_depth` is to avoid hanging in case the data contains
+-- loops. The default value for `max_depth` is 3000.
+--
+-- If the function `func` used for testing returns any value different from
+-- false or nil, the search is terminated and this value is returned.
+--
+-- Example to find an element in an xml tree:
+--
+--   local poor_guy = lub.search(data, function(node)
+--     if node.xml == 'Person' and node.status == 'poor' then
+--       return node
+--     end
+--   end)
+--
+-- Example to collect elements:
+--
+--   local list = {}
+--   lub.search(data, function(node)
+--     if node.xml == 'Person' then
+--       table.insert(list, node)
+--     end
+--   end 
+--
+-- ## Speed
+--
+-- The traversal speed depends on whether we are using Lua or LuaJIT. The tests
+-- below were done on a relatively large medical XML file without very deep
+-- nesting.
+--
+--   #txt ascii
+--   ===== Lua
+--   IDDFS     5.10
+--   BFS       2.58
+--   ===== LuaJIT
+--   IDDFS     0.30
+--   BFS       0.36
+-- function lib.search(data, func, max_depth)
+
+-- Iterative deepening depth-first search
+local function itdeepSearch(data, func, depth, max_depth)
+  local end_reached = true
+  local result
+  for _, child in ipairs(data) do
+    if type(child) == 'table' then
+      if depth == max_depth then
+        local r = func(child)
+        if r then
+          return r
+        elseif child[1] then
+          -- Could search deeper
+          end_reached = false
+        end
+      elseif child[1] then
+        -- Go deeper
+        local r, e = itdeepSearch(child, func, depth + 1, max_depth)
+        if r then
+          return r
+        else
+          end_reached = end_reached and e
+        end
+      end
+    end
+  end
+
+  return nil, end_reached
+end
+
+-- [Iterative deepening depth-first search](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search) with max depth testing. See #search for usage.
+function lib.IDDFS(data, func, max_depth)
+  local depth = 1
+  max_depth = max_depth or 3000
+  key = key or 'xml'
+  local r = func(data)
+  if r then return r end
+  while true do
+    local result, end_reached = itdeepSearch(data, func, 1, depth)
+    if result then
+      return result
+    elseif end_reached then
+      return nil
+    elseif depth < max_depth then
+      depth = depth + 1
+    else
+      error(string.format('Could not finish search: maximal depth of %i reached.', max_depth))
+    end
+  end
+end
+
+-- [Breath-first search](https://en.wikipedia.org/wiki/Breadth-first_search) with max depth testing. See #search for usage.
+function lib.BFS(data, func, max_depth)
+  local max_depth = max_depth or 3000
+  local queue = {}
+  local depth = {} -- depth queue
+  local head  = 1
+  local tail  = 1
+  local function push(e, d)
+    queue[tail] = e
+    depth[tail] = d
+    tail = tail + 1
+  end
+
+  local function pop()
+    if head == tail then return nil end
+    local e, d = queue[head], depth[head]
+    head = head + 1
+    return e, d
+  end
+
+  local elem = data
+  local d = 1
+  while elem and d <= max_depth do
+    local r = func(elem)
+    if r then return elem end
+    for _, child in ipairs(elem) do
+      if type(child) == 'table' then
+        push(child, d + 1)
+      end
+    end
+    elem, d = pop()
+  end
+
+  if d and d > max_depth then
+    error(string.format('Could not finish search: maximal depth of %i reached.', max_depth))
+  else
+    return nil
+  end
+end
+  
+-- nodoc
+lib.search = lib.BFS
 
 -- # Filesystem
 

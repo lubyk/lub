@@ -46,7 +46,7 @@ function lib.new(source)
     file:close()
   end
   setmetatable(self, lib)
-  private.makeFunction(self, source)
+  private.makeFunction(self, self.source)
   return self
 end
 

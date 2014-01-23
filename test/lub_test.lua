@@ -36,6 +36,129 @@ function should.deepMerge()
   assertValueEqual({a = { b = {x=3}, c = {d = 4, e = 5}, g = 2}}, base)
 end
 
+function should.search()
+  local data = {xml = 'document',
+    'blah blah',
+    {xml = 'article',
+      {xml = 'p', 'Blah blah',
+        {xml = 'b', 'Bob'},
+      },
+      {xml = 'p', 'Hop hop'},
+    },
+    {xml = 'b', 'Top'},
+  }
+  local list = {}
+  lub.search(data, function(node)
+    if node.xml == 'b' then
+      table.insert(list, node)
+    end
+  end)
+  assertValueEqual({
+    -- Breadth-first search
+    {xml = 'b', 'Top'},
+    {xml = 'b', 'Bob'},
+  }, list)
+end
+
+function should.raiseOnLoopInSearch()
+  local data = {xml = 'document',
+    'blah blah',
+    {xml = 'article',
+      {xml = 'p', 'Blah blah',
+        {xml = 'b', 'Bob'},
+      },
+      {xml = 'p', 'Hop hop'},
+    },
+    {xml = 'b', 'Top'},
+  }
+  table.insert(data[3], data)
+  assertError('Could not finish search: maximal depth of 3000 reached.', function()
+    r = lub.search(data, function(node)
+      if node.xml == 'x' then
+        return node
+      end
+    end)
+  end)
+end
+
+function should.searchWithSearch()
+  local data = {xml = 'document',
+    'blah blah',
+    {xml = 'article',
+      {xml = 'p', 'Blah blah',
+        {xml = 'b', 'Bob'},
+      },
+      {xml = 'p', 'Hop hop'},
+    },
+    {xml = 'b', 'Top'},
+  }
+  r = lub.search(data, function(node)
+    if node.xml == 'b' then
+      return node
+    end
+  end)
+  assertValueEqual({xml = 'b', 'Top'}, r)
+end
+
+function should.searchWithIDDFS()
+  local data = {xml = 'document',
+    'blah blah',
+    {xml = 'article',
+      {xml = 'p', 'Blah blah',
+        {xml = 'b', 'Bob'},
+      },
+      {xml = 'p', 'Hop hop'},
+    },
+    {xml = 'b', 'Top'},
+  }
+  r = lub.IDDFS(data, function(node)
+    if node.xml == 'b' then
+      return node
+    end
+  end)
+  assertValueEqual({xml = 'b', 'Top'}, r)
+end
+
+function should.searchWithBFS()
+  local data = {xml = 'document',
+    'blah blah',
+    {xml = 'article',
+      {xml = 'p', 'Blah blah',
+        {xml = 'b', 'Bob'},
+      },
+      {xml = 'p', 'Hop hop'},
+    },
+    {xml = 'b', 'Top'},
+  }
+  r = lub.BFS(data, function(node)
+    if node.xml == 'b' then
+      return node
+    end
+  end)
+  assertValueEqual({xml = 'b', 'Top'}, r)
+end
+
+function should.raiseOnLoopInBFS()
+  local data = {xml = 'document',
+    'blah blah',
+    {xml = 'article',
+      {xml = 'p', 'Blah blah',
+        {xml = 'b', 'Bob'},
+      },
+      {xml = 'p', 'Hop hop'},
+    },
+    {xml = 'b', 'Top'},
+  }
+  table.insert(data[3], data)
+  assertError('Could not finish search: maximal depth of 3000 reached.', function()
+    r = lub.BFS(data, function(node)
+      if node.xml == 'x' then
+        return node
+      end
+    end)
+  end)
+end
+
 function should.makePath()
   local path = lub.path('|fixtures/tmp/foo/bar/baz')
   lub.rmTree(lub.path('|fixtures/tmp'), true)
