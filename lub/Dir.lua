@@ -47,12 +47,12 @@ end
 -- Return an iterator to recursively find files matching `pattern` in the
 -- directory. The pattern syntax is the same as string.match.
 --
---   -- Find files ending in ".lua".
---   for file in lk.Dir('lib'):glob '%.lua$' do
---     print(file)
+--   -- Find paths ending in ".lua".
+--   for path in lub.Dir('lub'):glob '%.lua$' do
+--     print(path)
 --   end
---   --> lib/lk/Dir.lua
---   --> lib/lk/Doc.lua
+--   --> lub/Dir.lua
+--   --> lub/Doc.lua
 --   --> ...
 function lib:glob(pattern)
   local co = coroutine.create(glob_list)

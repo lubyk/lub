@@ -41,7 +41,7 @@ function lib.new(source)
   else
     self = source
     -- Grab source from path...
-    local file = io.open(self.path, 'r')
+    local file = assert(io.open(self.path, 'r'))
     self.source = file:read('*a')
     file:close()
   end
