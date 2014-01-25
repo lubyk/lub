@@ -39,7 +39,7 @@ function lib.new(source)
   if type(source) == 'string' then
     self = {source = source}
   else
-    self = source
+    self = assert(source)
     -- Grab source from path...
     local file = assert(io.open(self.path, 'r'))
     self.source = file:read('*a')
