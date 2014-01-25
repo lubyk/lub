@@ -1,5 +1,5 @@
 --[[--------------------
-  # Lubyk base module
+  # Lubyk base module <a href="https://travis-ci.org/lubyk/lub"><img src="https://travis-ci.org/lubyk/lub.png" alt="Build Status"></a> 
 
   Currently, this module contains core functions (code loading, templates, 
   helpers).
