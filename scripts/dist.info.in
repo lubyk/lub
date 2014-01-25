@@ -10,6 +10,7 @@ url = "http://doc.lubyk.org/{{lib.type}}.html"
 maintainer = "Gaspard Bucher"
 
 depends = {
-  "lua >= 5.1, < 5.3",
-  "luafilesystem >= 1.5.0",
+{% for _, v in ipairs(lib.DEPENDS) do %}
+  "{{v}}",
+{% end %}
 }
