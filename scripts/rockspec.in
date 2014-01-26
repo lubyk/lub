@@ -2,8 +2,8 @@
 package = "{{lib.type}}"
 version = "{{lib.VERSION}}-1"
 source = {
-  url = 'https://api.github.com/repos/lubyk/{{lib.type}}/tarball/REL-{{lib.VERSION}}',
-  dir = 'REL-{{lib.VERSION}}',
+  url = 'https://github.com/lubyk/{{lib.type}}/archive/REL-{{lib.VERSION}}.tar.gz',
+  dir = '{{lib.type}}-REL-{{lib.VERSION}}',
 }
 description = {
   summary = "Lubyk base module.",
