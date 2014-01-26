@@ -51,7 +51,7 @@ lib.DEPENDS = { -- doc
   -- Compatible with Lua 5.1, 5.2 and LuaJIT
   "lua >= 5.1, < 5.3",
   -- Uses [Lua Filesystem](http://keplerproject.github.io/luafilesystem/)
-  "luafilesystem >= 1.5.0",
+  "luafilesystem >= 1.6.0",
 }
 -- FIXME We need to have lub.plat contain current platform name such as 'macosx', 'linux' or 'win32'
 
