@@ -45,7 +45,7 @@ local lfs = require 'lfs'
 -- local core = require 'lub.core'
 
 -- Current version respecting [semantic versioning](http://semver.org).
-lib.VERSION = '1.0.3'
+lib.VERSION = '1.0.4'
 
 lib.DEPENDS = { -- doc
   -- Compatible with Lua 5.1, 5.2 and LuaJIT
@@ -68,9 +68,19 @@ lib.DEPENDS = { -- doc
 -- Usage:
 --
 --   local lub = require 'lub'
---   local lib = lub.class 'lub.Doc'
+--   local lut = require 'lut'
+--   local lib = lub.class 'lut.Doc'
+--
 --   -- ...
 --   return lib
+--
+-- WARN When using an initial lua table, make sure to use parenthesis around the
+-- function call:
+--
+--   local lib = lub.class('lut.Doc', {
+--     is_cool = true,
+--   })
+--   
 function lib.class(class_name, tbl)
   local lib = tbl or {}
   lib.type = class_name
