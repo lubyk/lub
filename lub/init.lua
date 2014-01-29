@@ -6,18 +6,13 @@
 
   <html><a href="https://github.com/lubyk/lub"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a></html>
   
-  This module is part of the [lubyk](http://lubyk.org) project. *MIT license*
-  &copy; Gaspard Bucher 2014.
+  *MIT license* &copy Gaspard Bucher 2014.
 
   ## Installation
   
   With [luarocks](http://luarocks.org):
 
     $ luarocks install lub
-  
-  With [luadist](http://luadist.org):
-
-    $ luadist install lub
 
 --]]--------------------
 local private = {}
