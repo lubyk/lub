@@ -338,6 +338,12 @@ function should.returnPlatform()
   assertTrue(choices[plat])
 end
 
+function should.returnElapsedTime()
+  local elapsed = lub.elapsed()
+  assertType('number', elapsed)
+  assertTrue(elapsed > 0)
+end
+
 function should.declareClass()
   local c = lub.class 'foo.Bar'
   assertEqual('foo.Bar', c.type)

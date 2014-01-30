@@ -60,6 +60,18 @@ lib.DEPENDS = { -- doc
 -- nodoc
 lib.plat = core.plat
 
+-- Get elapsed time since the library was opened in second. Timer is very
+-- precise. Uses `mach_absolute_time` on macosx and `clock_gettime` (MONOTONIC)
+-- on linux.
+--
+-- function lib.elapsed()
+
+-- nodoc
+lib.elapsed = core.elapsed
+
+-- Set reference time to now.
+core.initTimeRef()
+
 -- # Class management
 --
 -- Declare a new class with the following conventions:

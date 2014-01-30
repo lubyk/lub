@@ -26,36 +26,46 @@
 
   ==============================================================================
 */
-#ifndef LUBYK_INCLUDE_LUB_LUB_H_
-#define LUBYK_INCLUDE_LUB_LUB_H_
+#include "lub/lub.h"
 
+#ifdef __APPLE__ && __MACH__
 
-#include "dub/dub.h"
+//#include <CoreServices/CoreServices.h>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
+#include <unistd.h>
+#include <stdio.h>
 
-namespace lub {
+static uint64_t mach_ref_;
+static double   mach_convert_;
 
-  // Return a string representing the current running platform. Possible
-  // values are 'linux', 'macosx', 'unix' and 'win32'
-  inline const char *plat() {
-#ifdef _WIN32 || __WIN32__
-    return "win32";
-#elif __APPLE__ && __MACH__
-    return "macosx";
-#elif __linux__
-    return "linux";
-#elif __unix__
-    return "unix";
+void lub::initTimeRef() {
+  mach_timebase_info_data_t time_base_info;
+  mach_timebase_info(&time_base_info);
+  // numer/denom converts to nanoseconds. We divide by 10^9 to have seconds
+  mach_convert_ = (double)time_base_info.numer / (time_base_info.denom * 1000000000);
+  mach_ref_ = mach_absolute_time();
+}
+
+double lub::elapsed() {
+  return mach_convert_ * (mach_absolute_time() - mach_ref_);
+}
+
 #else
-    return "unknown";
+
+#include <time.h> // clock_gettime
+
+static timespec reference_;
+
+void lub::initTimeRef() {
+  clock_gettime(CLOCK_MONOTONIC, &reference_);
+}
+
+double lub::elapsed() {
+  timespec t;
+  clock_gettime(CLOCK_MONOTONIC, &t);
+  return (t.tv_sec - reference_->tv_sec) + (t.tv_nsec - reference_->tv_nsec) / 1000000000.0;
+}
+
 #endif
-  }
 
-  // Return precise elapsed time in [s] since library was opened.
-  double elapsed();
-
-  // Initialize time reference (internal function).
-  void initTimeRef();
-
-} // lub
-
-#endif // LUBYK_INCLUDE_LUB_LUB_H_

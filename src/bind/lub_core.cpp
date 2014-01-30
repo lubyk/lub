@@ -29,9 +29,41 @@ static int lub_plat(lua_State *L) {
   return lua_error(L);
 }
 
+/** double lub::elapsed()
+ * include/lub/lub.h:54
+ */
+static int lub_elapsed(lua_State *L) {
+  try {
+    lua_pushnumber(L, lub::elapsed());
+    return 1;
+  } catch (std::exception &e) {
+    lua_pushfstring(L, "lub.elapsed: %s", e.what());
+  } catch (...) {
+    lua_pushfstring(L, "lub.elapsed: Unknown exception");
+  }
+  return lua_error(L);
+}
+
+/** void lub::initTimeRef()
+ * include/lub/lub.h:57
+ */
+static int lub_initTimeRef(lua_State *L) {
+  try {
+    lub::initTimeRef();
+    return 0;
+  } catch (std::exception &e) {
+    lua_pushfstring(L, "lub.initTimeRef: %s", e.what());
+  } catch (...) {
+    lua_pushfstring(L, "lub.initTimeRef: Unknown exception");
+  }
+  return lua_error(L);
+}
+
 // --=============================================== FUNCTIONS
 static const struct luaL_Reg lub_functions[] = {
   { "plat"         , lub_plat             },
+  { "elapsed"      , lub_elapsed          },
+  { "initTimeRef"  , lub_initTimeRef      },
   { NULL, NULL},
 };
 

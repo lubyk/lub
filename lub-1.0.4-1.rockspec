@@ -35,6 +35,7 @@ build = {
       sources = {
         'src/bind/dub/dub.cpp',
         'src/bind/lub_core.cpp',
+        'src/lub.cpp',
       },
       incdirs = {'include', 'src/bind', 'src/vendor'},
       libraries = {'stdc++'},
