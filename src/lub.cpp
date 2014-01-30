@@ -27,6 +27,9 @@
   ==============================================================================
 */
 #include "lub/lub.h"
+#include "dub/dub.h"
+
+#define TIME_SCALE 1000000000.0
 
 #ifdef __APPLE__ && __MACH__
 
@@ -36,35 +39,55 @@
 #include <unistd.h>
 #include <stdio.h>
 
-static uint64_t mach_ref_;
-static double   mach_convert_;
+static double sConvert;
 
 void lub::initTimeRef() {
   mach_timebase_info_data_t time_base_info;
   mach_timebase_info(&time_base_info);
   // numer/denom converts to nanoseconds. We divide by 10^9 to have seconds
-  mach_convert_ = (double)time_base_info.numer / (time_base_info.denom * 1000000000);
-  mach_ref_ = mach_absolute_time();
+  sConvert = (double)time_base_info.numer / time_base_info.denom / TIME_SCALE;
 }
 
 double lub::elapsed() {
-  return mach_convert_ * (mach_absolute_time() - mach_ref_);
+  return sConvert * mach_absolute_time();
+}
+
+#elif _WIN32 || __WIN32__
+
+#include <windows.h>
+
+static double sConvert;
+
+void lub::initTimeRef() {
+  sConvert = 0.0;
+
+  LARGE_INTEGER lpFrequency;
+  if (!QueryPerformanceCounter(&lpFrequency))
+    throw dub::Exception("Cannot retrieve performance counter frequency.");
+
+  sConvert = 1.0 / lpFrequency;
+}
+
+double lub::elapsed() {
+  LARGE_INTEGER lpPerformanceCount;
+  if (!QueryPerformanceCounter(&lpPerformanceCount))
+    throw dub::Exception("Cannot retrieve performance counter value.");
+
+  return sConvert * lpPerformanceCount;
 }
 
 #else
 
 #include <time.h> // clock_gettime
 
-static timespec reference_;
-
 void lub::initTimeRef() {
-  clock_gettime(CLOCK_MONOTONIC, &reference_);
+  // noop
 }
 
 double lub::elapsed() {
   timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
-  return (t.tv_sec - reference_->tv_sec) + (t.tv_nsec - reference_->tv_nsec) / 1000000000.0;
+  return t.tv_sec + (t.tv_nsec / TIME_SCALE);
 }
 
 #endif

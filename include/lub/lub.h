@@ -50,7 +50,7 @@ namespace lub {
 #endif
   }
 
-  // Return precise elapsed time in [s] since library was opened.
+  // Return precise monotonic time in [s] since an arbitry point in time.
   double elapsed();
 
   // Initialize time reference (internal function).

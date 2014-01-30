@@ -60,9 +60,14 @@ lib.DEPENDS = { -- doc
 -- nodoc
 lib.plat = core.plat
 
--- Get elapsed time since the library was opened in second. Timer is very
--- precise. Uses `mach_absolute_time` on macosx and `clock_gettime` (MONOTONIC)
--- on linux.
+-- Get *monotonic* elapsed time since some arbitrary point in time. This timer
+-- is as precise as the OS permits and does not jump forward or back. When a
+-- computer is connected to atomic clocks with ntp protocol, this clock is
+-- adjusted by altering it's speed and should be very precise but can have some
+-- jitter.
+--
+-- Uses `mach_absolute_time` on macosx, `clock_gettime` (CLOCK_MONOTONIC) on
+-- linux and `QueryPerformanceCounter` on windows.
 --
 -- function lib.elapsed()
 
