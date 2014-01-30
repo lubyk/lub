@@ -24,21 +24,63 @@ dependencies = {
 }
 build = {
   type = 'builtin',
-  modules = {
-    -- Plain Lua files
-    ['lub'            ] = 'lub/init.lua',
-    ['lub.Autoload'   ] = 'lub/Autoload.lua',
-    ['lub.Dir'        ] = 'lub/Dir.lua',
-    ['lub.Template'   ] = 'lub/Template.lua',
-    -- C++ modules
-    ['lub.core'       ] = {
-      sources = {
-        'src/bind/dub/dub.cpp',
-        'src/bind/lub_core.cpp',
-        'src/lub.cpp',
+  platforms = {
+    linux = {
+      modules = {
+        -- Plain Lua files
+        ['lub'            ] = 'lub/init.lua',
+        ['lub.Autoload'   ] = 'lub/Autoload.lua',
+        ['lub.Dir'        ] = 'lub/Dir.lua',
+        ['lub.Template'   ] = 'lub/Template.lua',
+        -- C++ modules
+        ['lub.core'       ] = {
+          sources = {
+            'src/bind/dub/dub.cpp',
+            'src/bind/lub_core.cpp',
+            'src/lub.cpp',
+          },
+          incdirs = {'include', 'src/bind', 'src/vendor'},
+          libraries = { 'stdc++', 'rt' },
+        },
       },
-      incdirs = {'include', 'src/bind', 'src/vendor'},
-      libraries = {'stdc++'},
+    },
+    macosx = {
+      modules = {
+        -- Plain Lua files
+        ['lub'            ] = 'lub/init.lua',
+        ['lub.Autoload'   ] = 'lub/Autoload.lua',
+        ['lub.Dir'        ] = 'lub/Dir.lua',
+        ['lub.Template'   ] = 'lub/Template.lua',
+        -- C++ modules
+        ['lub.core'       ] = {
+          sources = {
+            'src/bind/dub/dub.cpp',
+            'src/bind/lub_core.cpp',
+            'src/lub.cpp',
+          },
+          incdirs = {'include', 'src/bind', 'src/vendor'},
+          libraries = { 'stdc++' },
+        },
+      },
+    },
+    win32 = {
+      modules = {
+        -- Plain Lua files
+        ['lub'            ] = 'lub/init.lua',
+        ['lub.Autoload'   ] = 'lub/Autoload.lua',
+        ['lub.Dir'        ] = 'lub/Dir.lua',
+        ['lub.Template'   ] = 'lub/Template.lua',
+        -- C++ modules
+        ['lub.core'       ] = {
+          sources = {
+            'src/bind/dub/dub.cpp',
+            'src/bind/lub_core.cpp',
+            'src/lub.cpp',
+          },
+          incdirs = {'include', 'src/bind', 'src/vendor'},
+          libraries = { 'stdc++' },
+        },
+      },
     },
   },
 }
