@@ -30,6 +30,16 @@ build = {
     ['lub.Autoload'   ] = 'lub/Autoload.lua',
     ['lub.Dir'        ] = 'lub/Dir.lua',
     ['lub.Template'   ] = 'lub/Template.lua',
+    -- C++ modules
+    ['lub.core'       ] = {
+      sources = {
+        'src/bind/dub/dub.cpp',
+        'src/bind/lub_core.cpp',
+      },
+      incdirs = {'include', 'src/bind', 'src/vendor'},
+      libraries = {'stdc++'},
+    },
   },
 }
+
 

@@ -1,13 +1,13 @@
+== 1.0.4
+
+  * Added 'plat()' method to get current platform name.
+  
 == 1.0.3 2014-01-25
 
-* Major changes
   * Added search algorithm 'search', 'IDDFS' and 'BFS',
-
-* Minor changes
   * Fixed a bug in lub.Template when source is provided with a path.
 
 == 1.0.2 2013-04-09
 
-* Major changes
   * First release (importing and adapting code from original 'lk' library in lubyk).
 

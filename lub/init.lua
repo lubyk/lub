@@ -15,6 +15,9 @@
     $ luarocks install lub
 
 --]]--------------------
+local lfs  = require 'lfs'
+local core = require 'lub.core'
+
 local private = {}
 local gsub,        sub,        match,        len,        pairs, ipairs =
       string.gsub, string.sub, string.match, string.len, pairs, ipairs
@@ -33,8 +36,6 @@ local lib = {}
 
 -- ## Dependencies
 --
--- + lfs: luafilesystem
-local lfs = require 'lfs'
 
 -- + lub.core: lub.Poller, lub.Thread, lub.plat
 -- local core = require 'lub.core'
@@ -48,7 +49,16 @@ lib.DEPENDS = { -- doc
   -- Uses [Lua Filesystem](http://keplerproject.github.io/luafilesystem/)
   "luafilesystem >= 1.6.0",
 }
--- FIXME We need to have lub.plat contain current platform name such as 'macosx', 'linux' or 'win32'
+
+-- # Environment information
+--
+-- Get name of currently running platform. Values are 'linux',
+-- 'macosx', 'unix' and 'win32'.
+--
+-- function lib.plat()
+
+-- nodoc
+lib.plat = core.plat
 
 -- # Class management
 --

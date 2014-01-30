@@ -1,4 +1,7 @@
-{% local lfs = require 'lfs' %}
+{% 
+local lfs = require 'lfs'
+local lub = require 'lub'
+%}
 package = "{{lib.type}}"
 version = "{{lib.VERSION}}-1"
 source = {
@@ -34,6 +37,17 @@ build = {
     {{string.format("[%-17s] = '%s/%s.lua'", "'"..lib.type..'.'..file.."'", lib.type, file)}},
 {% end %}
 {% end %}
+    -- C++ modules
+    {{string.format("[%-17s] = ", "'"..lib.type..".core'")}}{
+      sources = {
+{% for path in lub.Dir('src'):glob '%.cpp' do %}
+        '{{path}}',
+{% end %}
+      },
+      incdirs = {'include', 'src/bind', 'src/vendor'},
+      libraries = {'stdc++'},
+    },
   },
 }
+
 

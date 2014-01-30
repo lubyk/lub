@@ -332,6 +332,12 @@ function should.log()
   assertMatch('Hello', out[2])
 end
 
+function should.returnPlatform()
+  local plat = lub.plat()
+  local choices = { macosx = true, linux = true, unix = true, win32 = true}
+  assertTrue(choices[plat])
+end
+
 function should.declareClass()
   local c = lub.class 'foo.Bar'
   assertEqual('foo.Bar', c.type)
