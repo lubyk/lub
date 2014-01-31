@@ -25,6 +25,7 @@ function should.listFiles()
 
   assertValueEqual({
     'Dir_test.lua',
+    'Finalizer_test.lua',
     'Template_test.lua',
     'all.lua',
     'fixtures',

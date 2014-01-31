@@ -404,6 +404,10 @@ function should.returnParentDirectory()
   assertEqual('c', child)
 end
 
+function should.createFinalizerWithFunc()
+  assertEqual('lub.Finalizer', lub.Finalizer().type)
+end
+
 -- Disable coverage testing for deprecated pathDir.
 should.ignore.pathDir = true
 
