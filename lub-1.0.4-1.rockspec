@@ -49,7 +49,7 @@ build = {
     linux = {
       modules = {
         ['lub.core'] = {
-          librairies = { 'rt' },
+          libraries = { 'rt' },
         },
       },
     },

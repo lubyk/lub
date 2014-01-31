@@ -37,7 +37,7 @@ namespace lub {
   // Return a string representing the current running platform. Possible
   // values are 'linux', 'macosx', 'unix' and 'win32'
   inline const char *plat() {
-#ifdef _WIN32 || __WIN32__
+#if _WIN32 || __WIN32__
     return "win32";
 #elif __APPLE__ && __MACH__
     return "macosx";
