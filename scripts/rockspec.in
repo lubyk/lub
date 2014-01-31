@@ -4,7 +4,7 @@ local lub = require 'lub'
 -- Platforms with special cases
 local platspec = {'linux'} --, 'macosx', 'win32'
 local platlibs = {
-  linux   = "'rt'",
+  linux   = "'stdc++', 'rt'",
 }
 %}
 package = "{{lib.type}}"

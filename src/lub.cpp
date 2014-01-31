@@ -31,7 +31,7 @@
 
 #define TIME_SCALE 1000000000.0
 
-#ifdef __APPLE__ && __MACH__
+#if __APPLE__ && __MACH__
 
 //#include <CoreServices/CoreServices.h>
 #include <mach/mach.h>
