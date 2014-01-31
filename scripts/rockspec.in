@@ -1,10 +1,9 @@
 {% 
 local lfs = require 'lfs'
 local lub = require 'lub'
-local platforms = {'linux', 'macosx', 'win32'}
+local platforms = {} -- 'linux', 'macosx', 'win32'
 local platlibs = {
-  linux   = "'stdc++', 'rt'",
-  default = "'stdc++'",
+  linux   = "'rt'",
 }
 %}
 package = "{{lib.type}}"
@@ -27,6 +26,9 @@ description = {
   homepage = "http://doc.lubyk.org/{{lib.type}}.html",
   license = "MIT"
 }
+
+
+{% -- DEFAULT TEMPLATE FOR MODULE WITH C++ %}
 dependencies = {
 {% for _, v in ipairs(lib.DEPENDS) do %}
   "{{v}}",
@@ -34,31 +36,43 @@ dependencies = {
 }
 build = {
   type = 'builtin',
+  modules = {
+    -- Plain Lua files
+    {{string.format("[%-17s] = '%s/%s.lua'", "'"..lib.type.."'", lib.type, 'init')}},
+{% for file in lfs.dir(lib.type) do %}
+{% if file ~= 'init.lua' and file:match('.lua$') then file = file:sub(1, -5) %}
+    {{string.format("[%-17s] = '%s/%s.lua'", "'"..lib.type..'.'..file.."'", lib.type, file)}},
+{% end %}
+{% end %}
+    -- C++ modules
+    {{string.format("[%-17s] = ", "'"..lib.type..".core'")}}{
+      sources = {
+{% for path in lub.Dir('src'):glob '%.cpp' do %}
+        '{{path}}',
+{% end %}
+      },
+      incdirs = {'include', 'src/bind', 'src/vendor'},
+      libraries = {'stdc++'},
+    },
+  },
+{% if #platforms > 0 then %}
   platforms = {
 {% for _, plat in ipairs(platforms) do %}
     {{plat}} = {
       modules = {
-        -- Plain Lua files
-        {{string.format("[%-17s] = '%s/%s.lua'", "'"..lib.type.."'", lib.type, 'init')}},
-{% for file in lfs.dir(lib.type) do %}
-{% if file ~= 'init.lua' and file:match('.lua$') then file = file:sub(1, -5) %}
-        {{string.format("[%-17s] = '%s/%s.lua'", "'"..lib.type..'.'..file.."'", lib.type, file)}},
-{% end %}
-{% end %}
-        -- C++ modules
-        {{string.format("[%-17s] = ", "'"..lib.type..".core'")}}{
+        ['lub.core'] = {
           sources = {
-{% for path in lub.Dir('src'):glob '%.cpp' do %}
+{% for path in lub.Dir('src/'..plat):glob '%.cpp' do %}
             '{{path}}',
 {% end %}
           },
-          incdirs = {'include', 'src/bind', 'src/vendor'},
-          libraries = { {{platlibs[plat] or platlibs.default}} },
+{% if platlibs[plat] then %}
+          librairies = { {{platlibs[plat]}} },
+{% end %}
         },
       },
     },
 {% end %}
   },
+{% end %}
 }
-
-

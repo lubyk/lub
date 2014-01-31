@@ -18,71 +18,31 @@ description = {
   homepage = "http://doc.lubyk.org/lub.html",
   license = "MIT"
 }
+
+
 dependencies = {
   "lua >= 5.1, < 5.3",
   "luafilesystem >= 1.6.0",
 }
 build = {
   type = 'builtin',
-  platforms = {
-    linux = {
-      modules = {
-        -- Plain Lua files
-        ['lub'            ] = 'lub/init.lua',
-        ['lub.Autoload'   ] = 'lub/Autoload.lua',
-        ['lub.Dir'        ] = 'lub/Dir.lua',
-        ['lub.Template'   ] = 'lub/Template.lua',
-        -- C++ modules
-        ['lub.core'       ] = {
-          sources = {
-            'src/bind/dub/dub.cpp',
-            'src/bind/lub_core.cpp',
-            'src/lub.cpp',
-          },
-          incdirs = {'include', 'src/bind', 'src/vendor'},
-          libraries = { 'stdc++', 'rt' },
-        },
+  modules = {
+    -- Plain Lua files
+    ['lub'            ] = 'lub/init.lua',
+    ['lub.Autoload'   ] = 'lub/Autoload.lua',
+    ['lub.Dir'        ] = 'lub/Dir.lua',
+    ['lub.Finalizer'  ] = 'lub/Finalizer.lua',
+    ['lub.Template'   ] = 'lub/Template.lua',
+    -- C++ modules
+    ['lub.core'       ] = {
+      sources = {
+        'src/bind/dub/dub.cpp',
+        'src/bind/lub_core.cpp',
+        'src/bind/lub_Finalizer.cpp',
+        'src/lub.cpp',
       },
-    },
-    macosx = {
-      modules = {
-        -- Plain Lua files
-        ['lub'            ] = 'lub/init.lua',
-        ['lub.Autoload'   ] = 'lub/Autoload.lua',
-        ['lub.Dir'        ] = 'lub/Dir.lua',
-        ['lub.Template'   ] = 'lub/Template.lua',
-        -- C++ modules
-        ['lub.core'       ] = {
-          sources = {
-            'src/bind/dub/dub.cpp',
-            'src/bind/lub_core.cpp',
-            'src/lub.cpp',
-          },
-          incdirs = {'include', 'src/bind', 'src/vendor'},
-          libraries = { 'stdc++' },
-        },
-      },
-    },
-    win32 = {
-      modules = {
-        -- Plain Lua files
-        ['lub'            ] = 'lub/init.lua',
-        ['lub.Autoload'   ] = 'lub/Autoload.lua',
-        ['lub.Dir'        ] = 'lub/Dir.lua',
-        ['lub.Template'   ] = 'lub/Template.lua',
-        -- C++ modules
-        ['lub.core'       ] = {
-          sources = {
-            'src/bind/dub/dub.cpp',
-            'src/bind/lub_core.cpp',
-            'src/lub.cpp',
-          },
-          incdirs = {'include', 'src/bind', 'src/vendor'},
-          libraries = { 'stdc++' },
-        },
-      },
+      incdirs = {'include', 'src/bind', 'src/vendor'},
+      libraries = {'stdc++'},
     },
   },
 }
-
-
