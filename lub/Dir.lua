@@ -8,6 +8,8 @@
 --]]------------------------------------------------------
 local lub = require 'lub'
 local lfs = require 'lfs'
+local match,        create,           resume,           yield,           huge =
+      string.match, coroutine.create, coroutine.resume, coroutine.yield, math.huge
 
 local lib = lub.class('lk.Dir', {
   sep = '/',
@@ -26,17 +28,17 @@ function lib.new(path)
   return setmetatable(self, lib)
 end
 
-local function glob_list(base, pattern)
+local function glob_list(base, pattern, max_depth)
   for file in lfs.dir(base) do
-    if not string.match(file, lib.ignore_pattern) then
+    if not match(file, lib.ignore_pattern) then
       local fullpath = base..lib.sep..file
       local attrs = lfs.attributes(fullpath)
       if attrs and attrs.mode == 'file' then
-        if not pattern or string.match(fullpath, pattern) then
-          coroutine.yield(fullpath)
+        if not pattern or match(fullpath, pattern) then
+          yield(fullpath)
         end
-      elseif attrs and attrs.mode == 'directory' then
-        glob_list(fullpath, pattern)
+      elseif attrs and attrs.mode == 'directory' and max_depth > 0 then
+        glob_list(fullpath, pattern, max_depth - 1)
       end
     end
   end
@@ -45,7 +47,9 @@ end
 -- # Methods
 
 -- Return an iterator to recursively find files matching `pattern` in the
--- directory. The pattern syntax is the same as string.match.
+-- directory. The pattern syntax is the same as string.match. Recursivity can
+-- be altered by setting `max_depth` argument. 0 = do not enter sub-directories.
+-- Default value for max_depth is math.huge.
 --
 --   -- Find paths ending in ".lua".
 --   for path in lub.Dir('lub'):glob '%.lua$' do
@@ -54,11 +58,11 @@ end
 --   --> lub/Dir.lua
 --   --> lub/Doc.lua
 --   --> ...
-function lib:glob(pattern)
-  local co = coroutine.create(glob_list)
-  --glob_list(self.path, pattern, list)
+function lib:glob(pattern, max_depth)
+  local max_depth = max_depth or huge
+  local co = create(glob_list)
   return function()
-    local ok, value = coroutine.resume(co, self.path, pattern)
+    local ok, value = resume(co, self.path, pattern, max_depth)
     if ok then
       return value
     else
@@ -70,8 +74,8 @@ end
 local function list_files(self)
   local base = self.path
   for file in lfs.dir(base) do
-    if not string.match(file, self.ignore_pattern) then
-      coroutine.yield(base..self.sep..file)
+    if not match(file, self.ignore_pattern) then
+      yield(base..self.sep..file)
     end
 	end
 end
@@ -85,9 +89,9 @@ end
 --   --> lib/lk
 --   --> lib/lk.lua
 function lib:list()
-  local co = coroutine.create(list_files)
+  local co = create(list_files)
   return function()
-    local ok, value = coroutine.resume(co, self)
+    local ok, value = resume(co, self)
     if ok then
       return value
     else
@@ -100,7 +104,7 @@ end
 -- `pattern`.
 function lib:contains(pattern)
   for file in lfs.dir(self.path) do
-    if string.match(file, pattern) then
+    if match(file, pattern) then
       return true
     end
 	end

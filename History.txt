@@ -3,6 +3,7 @@
   * Added 'plat()' method to get current platform name.
   * Added 'elapsed()' to have precise timing (to the nanosecond).
   * Added 'lub.Finalizer' class.
+  * Added 'max_depth' argument to lub.Dir.glob
   
 == 1.0.3 2014-01-25
 

@@ -15,6 +15,24 @@ function should.listFilesMatchingPattern()
   end
 end
 
+function should.limitGlobDepth()
+  local dir  = lub.Dir(lub.path '|')
+  local list = {}
+  local pattern = '.*'
+  for file in dir:glob(pattern, 0) do
+    lub.insertSorted(list, file)
+  end
+  assertValueEqual({
+    'test/Dir_test.lua',
+    'test/Finalizer_test.lua',
+    'test/Template_test.lua',
+    'test/all.lua',
+    'test/lub_test.lua',
+    -- should not enter fixtures
+    -- 'test/fixtures/io.txt',
+  }, list)
+end
+
 function should.listFiles()
   local base = lub.path '|'
   local list = {}
