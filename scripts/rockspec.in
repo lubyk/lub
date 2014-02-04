@@ -72,7 +72,7 @@ build = {
           },
 {% end %}
 {% if platlibs[plat] then %}
-          librairies = { {{platlibs[plat]}} },
+          libraries = { {{platlibs[plat]}} },
 {% end %}
         },
       },

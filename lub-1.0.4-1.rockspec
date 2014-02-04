@@ -54,7 +54,7 @@ build = {
     linux = {
       modules = {
         ['lub.core'] = {
-          librairies = { 'stdc++', 'rt' },
+          libraries = { 'stdc++', 'rt' },
         },
       },
     },
