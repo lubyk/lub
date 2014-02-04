@@ -65,6 +65,25 @@ function should.gcOldThreads()
   assertEqual(1, t)
 end
 
+function should.sleep()
+  local s = Scheduler()
+  local t = 0
+  s:run(function()
+    Thread(function() 
+      t = t * 10
+      sleep(0.01) --> runs main thread again
+      t = t * 2
+      sleep(0.01)
+    end)
+    t = t + 1
+    sleep(0.01) --> runs thread
+    assertEqual(10, t)
+    t = t + 1
+    sleep(0.01) --> runs thread
+    assertEqual(22, t)
+  end)
+end
+
 
 should:test()
 
