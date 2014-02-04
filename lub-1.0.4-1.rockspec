@@ -38,9 +38,11 @@ build = {
     ['lub.core'       ] = {
       sources = {
         'src/lub.cpp',
+        'src/poller.cpp',
         'src/bind/dub/dub.cpp',
         'src/bind/lub_core.cpp',
         'src/bind/lub_Finalizer.cpp',
+        'src/bind/lub_Poller.cpp',
       },
       incdirs = {'include', 'src/bind', 'src/vendor'},
       libraries = {'stdc++'},

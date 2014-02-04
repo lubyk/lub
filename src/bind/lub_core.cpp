@@ -8,12 +8,14 @@
  */
 #include "dub/dub.h"
 #include "lub/Finalizer.h"
+#include "lub/Poller.h"
 #include "lub/lub.h"
 
 using namespace lub;
 
 extern "C" {
 int luaopen_lub_Finalizer(lua_State *L);
+int luaopen_lub_Poller(lua_State *L);
 }
 
 /** const char* lub::plat()
@@ -79,6 +81,10 @@ extern "C" int luaopen_lub_core(lua_State *L) {
   luaopen_lub_Finalizer(L);
   // <lub.Finalizer>
   lua_setfield(L, -2, "Finalizer");
+  
+  luaopen_lub_Poller(L);
+  // <lub.Poller>
+  lua_setfield(L, -2, "Poller");
   
   // <lib>
   return 1;
