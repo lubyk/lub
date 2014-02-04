@@ -21,6 +21,9 @@ local core = require 'lub.core'
 local private = {}
 local gsub,        sub,        match,        len,        pairs, ipairs =
       string.gsub, string.sub, string.match, string.len, pairs, ipairs
+local yield            =
+      coroutine.yield
+
 local TAIL_CALL = rawget(_G, 'setfenv') and '%(tail call%)' or '%(%.%.%.tail calls%.%.%.%)'
 
 local CALL_TO_NEW = {__call = function(lib, ...) return lib.new(...) end}
@@ -49,6 +52,49 @@ lib.DEPENDS = { -- doc
   -- Uses [Lua Filesystem](http://keplerproject.github.io/luafilesystem/)
   "luafilesystem >= 1.6.0",
 }
+
+-- # Scheduling
+-- 
+
+-- Sleep for `sec` seconds. note that this should not be used to create a
+-- precise timer: use lub.timer for non-drifting timers.
+--
+-- this function simply does:
+--
+--   lub.sleep(0.5)
+--   -- is the same as
+--   coroutine.yield('sleep', sec)
+function lib.sleep(sec)
+  yield('sleep', sec)
+end
+
+
+-- Wait until the filedescriptor `fd` is ready for reading. Since some pollers
+-- are edge based, make sure that fd is *not readable* before calling this.
+--
+-- this function simply does:
+--
+--   lub.waitRead(fd)
+--   -- is the same as
+--   coroutine.yield('read', fd)
+function lib.waitRead(fd)
+  yield('read', fd)
+end
+
+-- Wait until the filedescriptor `fd` is ready for writing. Since some pollers
+-- are edge based, make sure that fd is *not writeable* before calling this.
+--
+-- this function simply does:
+--
+--   lub.waitWrite(fd)
+--   -- is the same as
+--   coroutine.yield('write', fd)
+function lib.waitWrite(fd)
+  yield('write', fd)
+end
+
+-- nodoc
+lib.millisleep = core.millisleep
 
 -- # Environment information
 --

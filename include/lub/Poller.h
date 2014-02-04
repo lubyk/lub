@@ -29,6 +29,7 @@
 #ifndef LUBYK_INCLUDE_LUB_POLLER_H_
 #define LUBYK_INCLUDE_LUB_POLLER_H_
 
+#include "lub/lub.h"
 
 #include "dub/dub.h"
 
@@ -100,24 +101,41 @@ public:
 
   /** Polls for new events.
    * @return true on success, false on interruption.
-   * @param timeout in seconds.
+   * @param wake time using monotonic clock in seconds.
    */
-  bool poll(double timeout) {
+  bool poll(double wake_at) {
+    double start = lub::elapsed();
+    time_t timeout;
+    
+    if (wake_at < 0) {
+      timeout = -1;
+    } else {
+      timeout = (wake_at - lub::elapsed()) * 1000;
+      if (timeout < 0) {
+        timeout = 0;
+      }
+    }
+
     // interruption can occur between poll operations
     if (interrupted_) return false;
-    // poll expects milliseconds
-    event_count_ = ::poll(pollitems_, used_count_, timeout * 1000);
-    // printf("===> %i\n", event_count_);
 
+    // poll expects milliseconds
+    event_count_ = ::poll(pollitems_, used_count_, timeout);
     if (event_count_ < 0) {
       // error or interruption
       event_count_ = 0;
       if (!interrupted_) {
-        throw dub::Exception("An error occured during zmq_poll (%s)", strerror(errno));
+        throw dub::Exception("An error occured during poll (%s)", strerror(errno));
       } else {
         return false;
       }
+    } else if (event_count_ == 0) {
+      // timed out
+      // remaining time to sleep in seconds
+      double remaining = (wake_at - lub::elapsed()) * 1000.0;
+      if (remaining > 0) lub::millisleep(remaining);    
     }
+
     return true;
   }
 

@@ -4,7 +4,8 @@
 
   Normally, end users do not interact directly with the poller.
   It is used internally by lub.Scheduler to wait on file
-  descriptors or sleep.
+  descriptors and sleep. This poller uses fast poll API and nanosleep
+  for precise operation.
 
 -- # Poller API
 -- TODO  
@@ -14,8 +15,6 @@
 local lub   = require 'lub'
 local core  = require 'lub.core'
 local lib   = core.Poller
-
-print('LOADING POLLER')
 
 -- Create a new poller. Optional `reserve` argument is used to reserve slots
 -- in memory for items to poll on (default = 8).

@@ -56,6 +56,19 @@ namespace lub {
   // Initialize time reference (internal function).
   void initTimeRef();
 
+  // Sleep amount of milliseconds. Returns amount of unslept time in case of
+  // interruption.
+  inline double millisleep(double ms) {
+    struct timespec sleeper, remain;
+    time_t seconds = ms / 1000;
+    sleeper.tv_sec  = seconds;
+    sleeper.tv_nsec = (unsigned int)((ms - seconds * 1000) * 1000000.0);
+    if (nanosleep(&sleeper, &remain)) {
+      return remain.tv_sec * 1000.0 + remain.tv_nsec / 1000000.0;
+    } else {
+      return 0.0;
+    }
+  }
 } // lub
 
 #endif // LUBYK_INCLUDE_LUB_LUB_H_

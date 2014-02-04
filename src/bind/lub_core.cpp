@@ -63,11 +63,28 @@ static int lub_initTimeRef(lua_State *L) {
   return lua_error(L);
 }
 
+/** double lub::millisleep(double ms)
+ * include/lub/lub.h:61
+ */
+static int lub_millisleep(lua_State *L) {
+  try {
+    double ms = dub::checknumber(L, 1);
+    lua_pushnumber(L, lub::millisleep(ms));
+    return 1;
+  } catch (std::exception &e) {
+    lua_pushfstring(L, "lub.millisleep: %s", e.what());
+  } catch (...) {
+    lua_pushfstring(L, "lub.millisleep: Unknown exception");
+  }
+  return lua_error(L);
+}
+
 // --=============================================== FUNCTIONS
 static const struct luaL_Reg lub_functions[] = {
   { "plat"         , lub_plat             },
   { "elapsed"      , lub_elapsed          },
   { "initTimeRef"  , lub_initTimeRef      },
+  { "millisleep"   , lub_millisleep       },
   { NULL, NULL},
 };
 

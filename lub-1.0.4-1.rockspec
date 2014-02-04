@@ -31,9 +31,11 @@ build = {
     ['lub.Autoload'   ] = 'lub/Autoload.lua',
     ['lub.Dir'        ] = 'lub/Dir.lua',
     ['lub.Finalizer'  ] = 'lub/Finalizer.lua',
+    ['lub.Poller'     ] = 'lub/Poller.lua',
     ['lub.Scheduler'  ] = 'lub/Scheduler.lua',
     ['lub.Template'   ] = 'lub/Template.lua',
     ['lub.Thread'     ] = 'lub/Thread.lua',
+    ['lub.Timer'      ] = 'lub/Timer.lua',
     -- C++ modules
     ['lub.core'       ] = {
       sources = {

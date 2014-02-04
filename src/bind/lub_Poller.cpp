@@ -12,7 +12,7 @@
 using namespace lub;
 
 /** lub::Poller::Poller(int reserve=8)
- * include/lub/Poller.h:93
+ * include/lub/Poller.h:94
  */
 static int Poller_Poller(lua_State *L) {
   try {
@@ -36,7 +36,7 @@ static int Poller_Poller(lua_State *L) {
 }
 
 /** lub::Poller::~Poller()
- * include/lub/Poller.h:95
+ * include/lub/Poller.h:96
  */
 static int Poller__Poller(lua_State *L) {
   try {
@@ -56,7 +56,7 @@ static int Poller__Poller(lua_State *L) {
 }
 
 /** bool lub::Poller::poll(double timeout)
- * include/lub/Poller.h:105
+ * include/lub/Poller.h:106
  */
 static int Poller_poll(lua_State *L) {
   try {
@@ -73,7 +73,7 @@ static int Poller_poll(lua_State *L) {
 }
 
 /** LuaStackSize lub::Poller::events(lua_State *L)
- * include/lub/Poller.h:126
+ * include/lub/Poller.h:133
  */
 static int Poller_events(lua_State *L) {
   try {
@@ -88,7 +88,7 @@ static int Poller_events(lua_State *L) {
 }
 
 /** int lub::Poller::add(int fd, int events)
- * include/lub/Poller.h:144
+ * include/lub/Poller.h:151
  */
 static int Poller_add(lua_State *L) {
   try {
@@ -106,7 +106,7 @@ static int Poller_add(lua_State *L) {
 }
 
 /** void lub::Poller::modify(int idx, int events, lua_State *L)
- * include/lub/Poller.h:150
+ * include/lub/Poller.h:157
  */
 static int Poller_modify(lua_State *L) {
   try {
@@ -124,7 +124,7 @@ static int Poller_modify(lua_State *L) {
 }
 
 /** void lub::Poller::remove(int idx)
- * include/lub/Poller.h:165
+ * include/lub/Poller.h:172
  */
 static int Poller_remove(lua_State *L) {
   try {
@@ -141,7 +141,7 @@ static int Poller_remove(lua_State *L) {
 }
 
 /** int lub::Poller::count()
- * include/lub/Poller.h:191
+ * include/lub/Poller.h:198
  */
 static int Poller_count(lua_State *L) {
   try {
@@ -157,7 +157,7 @@ static int Poller_count(lua_State *L) {
 }
 
 /** LuaStackSize lub::Poller::idxToPos(int idx, lua_State *L)
- * include/lub/Poller.h:198
+ * include/lub/Poller.h:205
  */
 static int Poller_idxToPos(lua_State *L) {
   try {
@@ -173,7 +173,7 @@ static int Poller_idxToPos(lua_State *L) {
 }
 
 /** LuaStackSize lub::Poller::posToIdx(int pos, lua_State *L)
- * include/lub/Poller.h:207
+ * include/lub/Poller.h:214
  */
 static int Poller_posToIdx(lua_State *L) {
   try {
@@ -189,7 +189,7 @@ static int Poller_posToIdx(lua_State *L) {
 }
 
 /** LuaStackSize lub::Poller::posToFd(int pos, lua_State *L)
- * include/lub/Poller.h:216
+ * include/lub/Poller.h:223
  */
 static int Poller_posToFd(lua_State *L) {
   try {
@@ -205,7 +205,7 @@ static int Poller_posToFd(lua_State *L) {
 }
 
 /** LuaStackSize lub::Poller::posToEvent(int pos, lua_State *L)
- * include/lub/Poller.h:225
+ * include/lub/Poller.h:232
  */
 static int Poller_posToEvent(lua_State *L) {
   try {

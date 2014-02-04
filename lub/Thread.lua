@@ -4,7 +4,7 @@
 
   ## Thread garbage collection
 
-  As long as a thread is scheduled to run, it will be kept in memory.
+  As long as a thread is scheduled to run (active loop, listening for, it will be kept in memory.
 
 --]]------------------------------------------------------
 local lub     = require 'lub'
@@ -38,6 +38,9 @@ function lib.new(func, at)
 end
 
 
+function lib:kill()
+  yield('kill', self)
+end
 -- PRIVATE
 --
 

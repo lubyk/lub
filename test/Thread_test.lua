@@ -7,10 +7,11 @@
 --]]------------------------------------------------------
 local lub    = require 'lub'
 local lut    = require 'lut'
-local should = lut.Test('lub.Thread', {coverage = false})
+local should = lut.Test 'lub.Thread'
 
 local Scheduler = lub.Scheduler
 local Thread    = lub.Thread
+local sleep     = lub.sleep
 
 function should.notCreateOutOfScheduler()
   assertError('Cannot create thread outside of running scheduler', function()
@@ -65,25 +66,51 @@ function should.gcOldThreads()
   assertEqual(1, t)
 end
 
+local elapsed = lub.elapsed
+
 function should.sleep()
   local s = Scheduler()
-  local t = 0
+  local t = {}
   s:run(function()
     Thread(function() 
-      t = t * 10
+      table.insert(t, 2)
       sleep(0.01) --> runs main thread again
-      t = t * 2
+      table.insert(t, 4)
       sleep(0.01)
+      table.insert(t, 6)
     end)
-    t = t + 1
+    table.insert(t, 1)
     sleep(0.01) --> runs thread
-    assertEqual(10, t)
-    t = t + 1
+    table.insert(t, 3)
     sleep(0.01) --> runs thread
-    assertEqual(22, t)
+    table.insert(t, 5)
   end)
+
+  assertValueEqual({
+    1, 2, 3, 4, 5, 6
+  }, t)
 end
 
+function should.kill()
+  local s = Scheduler()
+  local t = {}
+  local a, b
+  s:run(function()
+    a = Thread(function() 
+      table.insert(t, 'a')
+    end)
+
+    b = Thread(function() 
+      table.insert(t, 'b')
+    end)
+
+    a:kill()
+  end)
+
+  assertValueEqual({
+    'b'
+  }, t)
+end
 
 should:test()
 
