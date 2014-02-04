@@ -28,7 +28,6 @@ description = {
   license = "MIT"
 }
 
-
 {% -- DEFAULT TEMPLATE FOR MODULE WITH C++. Original in lub project. %}
 dependencies = {
 {% for _, v in ipairs(lib.DEPENDS) do %}
@@ -48,7 +47,10 @@ build = {
     -- C++ modules
     {{string.format("[%-17s] = ", "'"..lib.type..".core'")}}{
       sources = {
-{% for path in lub.Dir('src'):glob '%.cpp' do %}
+{% for path in lub.Dir('src'):glob('%.cpp',0) do %}
+        '{{path}}',
+{% end %}
+{% for path in lub.Dir('src/bind'):glob '%.cpp' do %}
         '{{path}}',
 {% end %}
       },
@@ -70,7 +72,7 @@ build = {
           },
 {% end %}
 {% if platlibs[plat] then %}
-          libraries = { {{platlibs[plat]}} },
+          librairies = { {{platlibs[plat]}} },
 {% end %}
         },
       },
@@ -79,3 +81,4 @@ build = {
   },
 {% end %}
 }
+

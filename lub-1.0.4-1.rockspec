@@ -19,7 +19,6 @@ description = {
   license = "MIT"
 }
 
-
 dependencies = {
   "lua >= 5.1, < 5.3",
   "luafilesystem >= 1.6.0",
@@ -32,14 +31,16 @@ build = {
     ['lub.Autoload'   ] = 'lub/Autoload.lua',
     ['lub.Dir'        ] = 'lub/Dir.lua',
     ['lub.Finalizer'  ] = 'lub/Finalizer.lua',
+    ['lub.Scheduler'  ] = 'lub/Scheduler.lua',
     ['lub.Template'   ] = 'lub/Template.lua',
+    ['lub.Thread'     ] = 'lub/Thread.lua',
     -- C++ modules
     ['lub.core'       ] = {
       sources = {
+        'src/lub.cpp',
         'src/bind/dub/dub.cpp',
         'src/bind/lub_core.cpp',
         'src/bind/lub_Finalizer.cpp',
-        'src/lub.cpp',
       },
       incdirs = {'include', 'src/bind', 'src/vendor'},
       libraries = {'stdc++'},
@@ -49,9 +50,10 @@ build = {
     linux = {
       modules = {
         ['lub.core'] = {
-          libraries = { 'stdc++', 'rt' },
+          librairies = { 'stdc++', 'rt' },
         },
       },
     },
   },
 }
+
