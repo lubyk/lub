@@ -6,7 +6,8 @@ version = "1.0.4"
 desc = "Lubyk base module."
 author = "Gaspard Bucher"
 license = "MIT"
-url = "http://doc.lubyk.org/lubdef.description.author"
+url = "http://doc.lubyk.org/lub.html"
+maintainer = "Gaspard Bucher"
 
 depends = {
   "lua >= 5.1, < 5.3",
