@@ -3,11 +3,10 @@
 name = "lub"
 version = "1.0.4"
 
-desc = "Lubyk base module (autoload, template, helpers)"
+desc = "Lubyk base module."
 author = "Gaspard Bucher"
 license = "MIT"
-url = "http://doc.lubyk.org/lub.html"
-maintainer = "Gaspard Bucher"
+url = "http://doc.lubyk.org/lubdef.description.author"
 
 depends = {
   "lua >= 5.1, < 5.3",
