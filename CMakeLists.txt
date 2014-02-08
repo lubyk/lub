@@ -46,7 +46,7 @@ set(core "${MODULE_NAME}_core")
 
 include_directories(include src/bind)
 
-file(GLOB CORE_SOURCES src/bind/dub/*.cpp src/bind/*.cpp src/*.cpp
+file(GLOB CORE_SOURCES src/*.c src/bind/dub/*.cpp src/bind/*.cpp src/*.cpp
   src/${PLAT}/*.cpp src/${PLAT}/*.mm)
 
 add_library(${core} MODULE ${CORE_SOURCES})
@@ -73,5 +73,5 @@ install(TARGETS ${core}
 #  install                                     
 # --------------------------------------------------------------
 install(DIRECTORY ${MODULE_NAME}
-  DESTINATION ${INSTALL_PATH}/${MODULE_NAME}
+  DESTINATION ${INSTALL_PATH}
 )

@@ -31,7 +31,7 @@ build = {
     ['lub.Autoload'   ] = 'lub/Autoload.lua',
     ['lub.Dir'        ] = 'lub/Dir.lua',
     ['lub.Template'   ] = 'lub/Template.lua',
-    -- C++ modules
+    -- C module
     ['lub.core'       ] = {
       sources = {
         'src/bind/dub/dub.cpp',
