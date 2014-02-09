@@ -398,8 +398,20 @@ function should.returnParentDirectory()
   assertEqual('c', child)
 end
 
-function should.createFinalizerWithFunc()
-  assertEqual('lub.Finalizer', lub.Finalizer().type)
+function should.listOrderedKeys()
+  local keys = lub.keys {
+    cool = 'the gang',
+    allo = 'quoi',
+    [2] = 'two',
+    Ab = '1',
+    [1] = 'one',
+    [3] = 'three',
+  }
+  assertValueEqual({
+    'Ab',
+    'allo',
+    'cool',
+  }, keys)
 end
 
 -- Disable coverage testing for deprecated pathDir.

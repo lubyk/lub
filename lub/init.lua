@@ -20,8 +20,8 @@ local core = require 'lub.core'
 local private = {}
 local format,        gsub,        sub,        match,        len,        pairs, ipairs =
       string.format, string.gsub, string.sub, string.match, string.len, pairs, ipairs
-local yield,           insert,       sort,       remove       =
-      coroutine.yield, table.insert, table.sort, table.remove
+local yield,           insert,       sort,       remove,       type =
+      coroutine.yield, table.insert, table.sort, table.remove, type
 
 local TAIL_CALL = rawget(_G, 'setfenv') and '%(tail call%)' or '%(%.%.%.tail calls%.%.%.%)'
 
@@ -51,49 +51,6 @@ lib.DEPENDS = { -- doc
   -- Uses [Lua Filesystem](http://keplerproject.github.io/luafilesystem/)
   "luafilesystem >= 1.6.0",
 }
-
--- # Scheduling
--- 
-
--- Sleep for `sec` seconds. note that this should not be used to create a
--- precise timer: use lub.timer for non-drifting timers.
---
--- this function simply does:
---
---   lub.sleep(0.5)
---   -- is the same as
---   coroutine.yield('sleep', sec)
-function lib.sleep(sec)
-  yield('sleep', sec)
-end
-
-
--- Wait until the filedescriptor `fd` is ready for reading. Since some pollers
--- are edge based, make sure that fd is *not readable* before calling this.
---
--- this function simply does:
---
---   lub.waitRead(fd)
---   -- is the same as
---   coroutine.yield('read', fd)
-function lib.waitRead(fd)
-  yield('read', fd)
-end
-
--- Wait until the filedescriptor `fd` is ready for writing. Since some pollers
--- are edge based, make sure that fd is *not writeable* before calling this.
---
--- this function simply does:
---
---   lub.waitWrite(fd)
---   -- is the same as
---   coroutine.yield('write', fd)
-function lib.waitWrite(fd)
-  yield('write', fd)
-end
-
--- nodoc
-lib.millisleep = core.millisleep
 
 -- # Environment information
 --
@@ -580,15 +537,20 @@ function lib.join(list, sep)
   return res or ''
 end
 
--- Get the list of keys from a table in sorted order.
-function lib.keys(dict)
-  local keys, n = {}, 0
-  for k,v in pairs(dict) do
-    n = n+1
-    keys[n] = k
+-- Get the ordered list of *string* keys from a table. If `no_order` is true, keys are
+-- not sorted.
+function lib.keys(dict, no_order)
+  local res, n = {}, 0
+  for k, v in pairs(dict) do
+    if type(k) == 'string' then
+      n = n + 1
+      res[n] = k
+    end
   end
-  sort(dict)
-  return dict
+  if not no_order then
+    sort(res)
+  end
+  return res
 end
 
 -- Insert `elem` into a `list`, keeping entries in "list" sorted. If elem is not

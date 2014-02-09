@@ -24,7 +24,6 @@ function should.limitGlobDepth()
   end
   assertValueEqual({
     'test/Dir_test.lua',
-    'test/Finalizer_test.lua',
     'test/Template_test.lua',
     'test/all.lua',
     'test/lub_test.lua',
@@ -43,7 +42,6 @@ function should.listFiles()
 
   assertValueEqual({
     'Dir_test.lua',
-    'Finalizer_test.lua',
     'Template_test.lua',
     'all.lua',
     'fixtures',
