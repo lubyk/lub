@@ -41,6 +41,15 @@ build = {
       libraries = {'stdc++'},
     },
   },
+  platforms = {
+    linux = {
+      modules = {
+        ['lub.core'] = {
+          libraries = {'stdc++', 'rt'},
+        },
+      },
+    },
+  },
 }
 
 
