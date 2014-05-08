@@ -17,20 +17,20 @@ if(UNIX)
     set(PLAT "macosx")
     set(LINK_FLAGS "-bundle -undefined dynamic_lookup -all_load")
 {% if platlibs.macosx then %}
-    set(LINK_LIBS {{ lub.join(platlibs.macosx, ' ') }})
+    set(LINK_LIBS "{{ lub.join(platlibs.macosx, ' ') }}")
 {% end %}
   else(APPLE)
     set(PLAT "linux")
     set(LINK_FLAGS "-shared")
 {% if platlibs.linux then %}
-    set(LINK_LIBS {{ lub.join(platlibs.linux, ' ') }})
+    set(LINK_LIBS "{{ lub.join(platlibs.linux, ' ') }}")
 {% end %}
   endif(APPLE)
 else(UNIX)
   if(WIN32)
     set(PLAT "win32")
 {% if platlibs.win32 then %}
-    set(LINK_LIBS {{ lub.join(platlibs.win32, ' ') }})
+    set(LINK_LIBS "{{ lub.join(platlibs.win32, ' ') }}")
 {% end %}
   else(WIN32)
     set(PLAT "unsupported")
