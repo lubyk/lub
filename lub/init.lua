@@ -43,7 +43,7 @@ local lib = {}
 -- local core = require 'lub.core'
 
 -- Current version respecting [semantic versioning](http://semver.org).
-lib.VERSION = '1.0.4'
+lib.VERSION = '1.0.5'
 
 lib.DEPENDS = { -- doc
   -- Compatible with Lua 5.1, 5.2 and LuaJIT

@@ -1,8 +1,8 @@
 package = "lub"
-version = "1.0.4-1"
+version = "1.0.5-1"
 source = {
-  url = 'https://github.com/lubyk/lub/archive/REL-1.0.4.tar.gz',
-  dir = 'lub-REL-1.0.4',
+  url = 'https://github.com/lubyk/lub/archive/REL-1.0.5.tar.gz',
+  dir = 'lub-REL-1.0.5',
 }
 description = {
   summary = "Lubyk base module.",

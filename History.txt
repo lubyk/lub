@@ -1,3 +1,6 @@
+== 1.0.5
+
+
 == 1.0.4 2014-05-08
 
   * Added 'plat()' method to get current platform name.
