@@ -1,4 +1,4 @@
-== 1.0.4
+== 1.0.4 2014-05-08
 
   * Added 'plat()' method to get current platform name.
   * Added 'max_depth' argument to lub.Dir.glob
