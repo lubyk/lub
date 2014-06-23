@@ -73,6 +73,9 @@ build = {
 {% for path in lub.Dir('src/'..plat):glob '%.c' do %}
             '{{path}}',
 {% end %}
+{% for path in lub.Dir('src/'..plat):glob '%.m' do %}
+            '{{path}}',
+{% end %}
           },
 {% end %}
 {% if def.platlibs[plat] then %}

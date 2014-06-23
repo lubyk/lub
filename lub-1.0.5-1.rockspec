@@ -21,7 +21,7 @@ description = {
 
 dependencies = {
   "lua >= 5.1, < 5.3",
-  "luafilesystem >= 1.6.0",
+  "luafilesystem >= 1.4.0",
 }
 build = {
   type = 'builtin',

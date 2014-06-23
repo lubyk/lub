@@ -49,7 +49,7 @@ lib.DEPENDS = { -- doc
   -- Compatible with Lua 5.1, 5.2 and LuaJIT
   "lua >= 5.1, < 5.3",
   -- Uses [Lua Filesystem](http://keplerproject.github.io/luafilesystem/)
-  "luafilesystem >= 1.6.0",
+  "luafilesystem >= 1.4.0",
 }
 
 -- # Environment information
@@ -270,7 +270,10 @@ local function scriptDir(level)
   end
 end
 
--- Return a path by resolving special initial characters:
+-- Return a path by resolving special initial characters. The `level` argument
+-- can move further up the call hierarchy before resolving paths (use `1` to
+-- move up one call). Special
+-- initial characters are:
 --
 -- + `/`   : absolute path, resolves '..' in path.
 -- + `|`   : path relative to script directory, resolves '..' in path.
@@ -627,7 +630,7 @@ local orig_req = require
 --   lub.traceRequire(true)
 --   -- From now on, all require statements are printed.
 -- 
--- If you simply want to make sure no require is not called to autoload code
+-- If you simply want to make sure no `require` is called to autoload code
 -- after some point, you should use [Autoload.strict](Autoload.html#strict).
 function lib.traceRequire(enable)
   if enable then
