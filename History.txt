@@ -1,3 +1,7 @@
+== 1.0.7 2014-06-24
+
+  * Using io.popen and uname to guess platform type.
+  
 == 1.0.6 2014-06-24
 
   * Using luarocks to guess platform type instead of using C++ define.
