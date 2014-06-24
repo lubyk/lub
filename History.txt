@@ -1,3 +1,7 @@
+== 1.0.6 2014-06-24
+
+  * Using luarocks to guess platform type instead of using C++ define.
+
 == 1.0.5 2014-06-23
 
   * Changing lfs dependency to lfs 1.4.0.

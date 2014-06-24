@@ -20,15 +20,16 @@ local def = {
     license  = "MIT",
   },
 
-  includes  = {'include', 'src/bind'},
-  libraries = {'stdc++'},
-  platlibs = {
-    linux   = {'stdc++', 'rt'},
-  },
+  pure_lua = true,
+  -- includes  = {'include', 'src/bind'},
+  -- libraries = {'stdc++'},
+  -- platlibs = {
+  --   linux   = {'stdc++', 'rt'},
+  -- },
 }
 
 -- Platform specific sources or link libraries
-def.platspec = def.platspec or lub.keys(def.platlibs)
+-- def.platspec = def.platspec or lub.keys(def.platlibs)
 
 --- End configuration
 

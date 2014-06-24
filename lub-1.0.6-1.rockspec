@@ -1,8 +1,8 @@
 package = "lub"
-version = "1.0.5-1"
+version = "1.0.6-1"
 source = {
-  url = 'https://github.com/lubyk/lub/archive/REL-1.0.5.tar.gz',
-  dir = 'lub-REL-1.0.5',
+  url = 'https://github.com/lubyk/lub/archive/REL-1.0.6.tar.gz',
+  dir = 'lub-REL-1.0.6',
 }
 description = {
   summary = "Lubyk base module.",
@@ -31,24 +31,6 @@ build = {
     ['lub.Autoload'   ] = 'lub/Autoload.lua',
     ['lub.Dir'        ] = 'lub/Dir.lua',
     ['lub.Template'   ] = 'lub/Template.lua',
-    -- C module
-    ['lub.core'       ] = {
-      sources = {
-        'src/bind/dub/dub.cpp',
-        'src/bind/lub_core.cpp',
-      },
-      incdirs   = {'include', 'src/bind'},
-      libraries = {'stdc++'},
-    },
-  },
-  platforms = {
-    linux = {
-      modules = {
-        ['lub.core'] = {
-          libraries = {'stdc++', 'rt'},
-        },
-      },
-    },
   },
 }
 

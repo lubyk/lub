@@ -9,7 +9,7 @@ set(target ${MODULE_NAME})
 set(INSTALL_PATH "${CMAKE_BINARY_DIR}/lib" CACHE STRING "Install directory path")
 # -------- PLAT
 
-set(LINK_LIBS stdc++)
+set(LINK_LIBS )
 
 if(UNIX)
   if(APPLE)
@@ -18,7 +18,6 @@ if(UNIX)
   else(APPLE)
     set(PLAT "linux")
     set(LINK_FLAGS "-shared")
-    set(LINK_LIBS "stdc++ rt")
   endif(APPLE)
 else(UNIX)
   if(WIN32)
@@ -38,36 +37,6 @@ endif(RELEASE)
 #  module
 # --------------------------------------------------------------
 add_custom_target(${MODULE_NAME} true)
-
-# --------------------------------------------------------------
-#  lub.core
-# --------------------------------------------------------------
-set(core "${MODULE_NAME}_core")
-
-include_directories(include src/bind)
-
-file(GLOB CORE_SOURCES src/*.c src/bind/dub/*.cpp src/bind/*.cpp src/*.cpp
-  src/${PLAT}/*.cpp src/${PLAT}/*.mm)
-
-add_library(${core} MODULE ${CORE_SOURCES})
-if(LINK_LIBS)
-  target_link_libraries(${core} ${LINK_LIBS})
-endif(LINK_LIBS)
-set_target_properties(${core}
-  PROPERTIES OUTPUT_NAME core
-  LINK_FLAGS ${LINK_FLAGS}
-  PREFIX ""
-  SUFFIX ".so"
-)  
-
-add_dependencies(${MODULE_NAME} ${core})
-
-# --------------------------------------------------------------
-#  install                                     
-# --------------------------------------------------------------
-install(TARGETS ${core}
-  DESTINATION ${INSTALL_PATH}/${MODULE_NAME}
-)
 
 # --------------------------------------------------------------
 #  install                                     

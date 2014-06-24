@@ -15,7 +15,6 @@
 
 --]]--------------------
 local lfs  = require 'lfs'
-local core = require 'lub.core'
 
 local private = {}
 local format,        gsub,        sub,        match,        len,        pairs, ipairs =
@@ -39,11 +38,8 @@ local lib = {}
 -- ## Dependencies
 --
 
--- + lub.core: lub.Poller, lub.Thread, lub.plat
--- local core = require 'lub.core'
-
 -- Current version respecting [semantic versioning](http://semver.org).
-lib.VERSION = '1.0.5'
+lib.VERSION = '1.0.6'
 
 lib.DEPENDS = { -- doc
   -- Compatible with Lua 5.1, 5.2 and LuaJIT
@@ -52,16 +48,37 @@ lib.DEPENDS = { -- doc
   "luafilesystem >= 1.4.0",
 }
 
+local SYSTINFO
 -- # Environment information
 --
 -- Get name of currently running platform. Values are 'linux',
--- 'macosx', 'unix' and 'win32'.
+-- 'macosx', 'unix' and 'win32'. Returns "platform", "platform detail", "system"
 --
--- function lib.plat()
+-- Platform detail is MinGW or Cygwin for example.
+--
+function lib.plat()
+  if not SYSTINFO then
+    local cfg = require 'luarocks.cfg'
+    local system = cfg.site_config.LUAROCKS_UNAME_S
+    SYSTINFO = {SYSTEM = system}
 
--- nodoc
-lib.plat = core.plat
-
+    if system == 'Darwin' then
+      SYSTINFO.PLAT = 'macosx'
+    elseif system:match('^CYGWIN') then
+      SYSTINFO.PLAT = 'win32'
+      SYSTINFO.PLAT_DETAIL = 'Cygwin'
+    elseif system and system:match("^Windows") then
+      SYSTINFO.PLAT = 'win32'
+      SYSTINFO.PLAT_DETAIL = 'Windows'
+    elseif system and system:match("^MINGW") then
+      SYSTINFO.PLAT = 'win32'
+      SYSTINFO.PLAT_DETAIL = 'MinGW'
+    else
+      SYSTINFO.PLAT = 'unix'
+    end
+  end
+  return SYSTINFO.PLAT, SYSTINFO.PLAT_DETAIL, SYSTINFO.SYSTEM
+end
 
 -- # Class management
 --
