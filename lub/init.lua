@@ -49,6 +49,7 @@ lib.DEPENDS = { -- doc
 }
 
 local SYSTINFO
+
 -- # Environment information
 --
 -- Get name of currently running platform. Values are 'linux',
@@ -59,7 +60,13 @@ local SYSTINFO
 function lib.plat()
   if not SYSTINFO then
     local cfg = require 'luarocks.cfg'
-    local system = cfg.site_config.LUAROCKS_UNAME_S
+    local ok, system = pcall(function()
+      return io.popen("uname -s"):read("*l")
+    end)
+    if not ok then
+      error('Cannot get platform information without "io.popen"')
+    end
+    
     SYSTINFO = {SYSTEM = system}
 
     if system == 'Darwin' then
