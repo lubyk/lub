@@ -219,4 +219,21 @@ function should.feedbackToController()
   assertEqual(60/127, my_foo.speed)
 end
 
+function should.notFeedbackToChangingController()
+  makePresetFile()
+  local p = lub.Param()
+  local mcontrol = p:addController('mi', {min = 0, max = 127})
+  local my_foo = {}
+  local foo = p:proxy(my_foo)
+
+  local t
+  function mcontrol:changed(key, value)
+    t = {key = key, value = value}
+  end
+
+  mcontrol(32, 60)
+  assertNil(t)
+  assertEqual(60/127, my_foo.speed)
+end
+
 should:test()

@@ -84,7 +84,7 @@ function lib:proxy(original_table, proxy_name, settings)
 end
 
 -- nodoc
-function lib:setValue(proxy, key, value)
+function lib:setValue(proxy, key, value, controller)
   local storage = proxy.__storage
   local old_value = storage[key]
   -- Always push value to original, even if it hasn't changed (it may change in
@@ -99,7 +99,7 @@ function lib:setValue(proxy, key, value)
       self.lchange = {proxy_name = proxy.__name, key = key}
       self.learn_next = false
     end
-    private.notifyControls(self, proxy.__name, key, value)
+    private.notifyControls(self, proxy.__name, key, value, controller)
   end
 end
 
@@ -116,7 +116,7 @@ function lib:control(ctrl, key, value)
   local proxy = self.proxies[rmap.proxy_name]
   if not rmap then return end
 
-  self:setValue(proxy, rmap.key, value)
+  self:setValue(proxy, rmap.key, value, ctrl)
 end
 
 -- Map parameter. If `proxy_name` and `key` are omitted, the last changed
@@ -332,7 +332,7 @@ function private:save()
   lub.writeall(self.filepath, self:dump())
 end
 
-function private:notifyControls(proxy_name, key, value)
+function private:notifyControls(proxy_name, key, value, skip_control)
   local proxy_mappings = self.mappings[proxy_name]
   if proxy_mappings then
     local mappings = proxy_mappings[key]
@@ -340,7 +340,7 @@ function private:notifyControls(proxy_name, key, value)
       local controls = self.controls
       for ctrl_name, ctrl_key in pairs(mappings) do
         local ctrl = controls[ctrl_name]
-        if ctrl then
+        if ctrl and ctrl ~= skip_control then
           local fun = ctrl.changed
           if fun then
             fun(ctrl, ctrl_key, ctrl.min + (value * ctrl.range))
