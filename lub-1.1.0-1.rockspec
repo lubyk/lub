@@ -1,8 +1,8 @@
 package = "lub"
-version = "1.0.7-1"
+version = "1.1.0-1"
 source = {
-  url = 'https://github.com/lubyk/lub/archive/REL-1.0.7.tar.gz',
-  dir = 'lub-REL-1.0.7',
+  url = 'https://github.com/lubyk/lub/archive/REL-1.1.0.tar.gz',
+  dir = 'lub-REL-1.1.0',
 }
 description = {
   summary = "Lubyk base module.",
@@ -30,6 +30,7 @@ build = {
     ['lub'            ] = 'lub/init.lua',
     ['lub.Autoload'   ] = 'lub/Autoload.lua',
     ['lub.Dir'        ] = 'lub/Dir.lua',
+    ['lub.Param'      ] = 'lub/Param.lua',
     ['lub.Template'   ] = 'lub/Template.lua',
   },
 }

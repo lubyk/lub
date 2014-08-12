@@ -1,3 +1,7 @@
+== 1.1
+
+  * Adding lub.Param class to save/restore script parameters and map controllers.
+
 == 1.0.7 2014-06-24
 
   * Using io.popen and uname to guess platform type.

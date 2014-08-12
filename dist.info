@@ -1,7 +1,7 @@
 --- This file is part of Lubyk project
 
 name = "lub"
-version = "1.0.7"
+version = "1.1.0"
 
 desc = "Lubyk base module."
 author = "Gaspard Bucher"

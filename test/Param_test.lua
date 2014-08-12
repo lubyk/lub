@@ -24,7 +24,7 @@ local function makePresetFile()
   -- Setup proxies
   local foo = p:proxy(my_foo)
   -- Proxy in 'uniforms' namespace
-  local bar = p:proxy(my_bar, {name = 'uniforms'})
+  local bar = p:proxy(my_bar, 'uniforms')
 
   foo.speed = 0.4
   bar.length = 0.5
@@ -32,6 +32,12 @@ local function makePresetFile()
   p:copyToPreset(2)
   foo.speed = 0.9
   p:savePreset()
+
+  -- save some mappings
+  local mcontrol = p:addController('mi', {min = 0, max = 127})
+  mcontrol:learn()
+  foo.speed = 0.7
+  mcontrol(32, 12) -- Now key 32 is linked to 'speed' param and mappings are saved.
   return p
 end
 
@@ -50,7 +56,7 @@ function should.writeToProxyAndSave()
   -- Setup proxies
   local foo = p:proxy(my_foo) -- default = 'main' name
   -- Proxy in 'uniforms' name
-  local bar = p:proxy(my_bar, {name = 'uniforms'})
+  local bar = p:proxy(my_bar, 'uniforms')
 
   -- Now we can write values inside 'foo' or 'bar' variables and these will be
   -- reflected inside 'p'.
@@ -69,7 +75,7 @@ end
 function should.saveToFile()
   local p = lub.Param()
   local foo = p:proxy({})
-  local bar = p:proxy({}, {name = 'uniforms'})
+  local bar = p:proxy({}, 'uniforms')
 
   foo.speed  = 0.3
   bar.length = 0.2
@@ -107,7 +113,7 @@ end
 function should.saveAllPresetsToFile()
   local p = lub.Param()
   local foo = p:proxy({})
-  local bar = p:proxy({}, {name = 'uniforms'})
+  local bar = p:proxy({}, 'uniforms')
 
   foo.speed  = 0.3
   bar.length = 0.2
@@ -151,35 +157,68 @@ function should.loadFromFile()
 end
 
 function should.mapController()
-  local p = lub.Param() -- Use default param file name = lub.path '|Param_test.yml'
-  -- some table that we want to proxy
+  local p = lub.Param()
   local my_foo = {}
-  -- Setup proxies
-  local foo = p:proxy(my_foo, {name = 'bok'}) -- default = {name = 'main', min = 0, max = 1}
-
+  local foo = p:proxy(my_foo, 'bok')
   local mcontrol = p:addController('mi', {min = 0, max = 127})
 
-  foo.hello = 0.5
+  foo.accel = 0.3
+  foo.speed = 0.4
   mcontrol:learn()
-  mcontrol(32, 12) -- Now key 32 is linked to 'hello' param and mappings are saved.
+  foo.accel = 0.3
+  foo.speed = 0.45 -- This one is changed
+  mcontrol(32, 12) -- Now key 32 is linked to 'speed' param and mappings are saved.
   
+  -- Note that we did not save preset
   assertEqual([[
+---
 mappings:
-  mi:
-    main
-      hello: 32
-  ]], p:dump())
+  bok:
+    speed:
+      mi: 32
+preset: p1
+presets: {}
+]], p:dump())
+  assertValueEqual({
+    bok = {
+      speed = {
+        mi = 32,
+      },
+    },
+  }, p.mappings)
+
+  assertValueEqual({
+    mi = {
+      [32] = {
+        proxy_name = 'bok',
+        key = 'speed',
+      },
+    },
+  }, p.rmappings)
+end
+
+function should.feedbackToController()
+  makePresetFile()
+  local p = lub.Param()
+  local mcontrol = p:addController('mi', {min = 0, max = 127})
+  local foo = p:proxy({})
+
+  mcontrol:learn()
+  foo.hello = 0.5
+  mcontrol(32, 127) -- Now key 32 is linked to 'hello' param and mappings are saved.
+  assertEqual(1.0, foo.hello)
 
 
   local p2 = lub.Param() -- Use default param file name = lub.path '|Param_test.yml'
   local my_foo2 = {}
-  local foo2 = lub:proxy(my_foo2)
-  local mcontrol2 = p:addController('mi', {min = 0, max = 127})
+  local foo2 = p2:proxy(my_foo2)
+  local mcontrol2 = p2:addController('mi', {min = 0, max = 127})
   local t
   function mcontrol2:changed(key, value)
     t = {key = key, value = value}
   end
-  p2.hello = 0.9
+
+  foo2.hello = 0.9
   assertValueEqual({
     key   = 32,
     value = 0.9 * 127,
