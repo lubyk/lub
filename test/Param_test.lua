@@ -14,6 +14,27 @@ function should.teardown()
   end
 end
 
+local function makePresetFile()
+  local p = lub.Param()
+  -- some table that we want to proxy
+  local my_foo = {}
+  -- another table to proxy
+  local my_bar = {}
+
+  -- Setup proxies
+  local foo = p:proxy(my_foo)
+  -- Proxy in 'uniforms' namespace
+  local bar = p:proxy(my_bar, {name = 'uniforms'})
+
+  foo.speed = 0.4
+  bar.length = 0.5
+  p:savePreset()
+  p:copyToPreset(2)
+  foo.speed = 0.9
+  p:savePreset()
+  return p
+end
+
 function should.createParam()
   local p = lub.Param()
   assertMatch('Param_test.%lua%.yml', p.filepath)
@@ -27,9 +48,9 @@ function should.writeToProxyAndSave()
   local my_bar = {}
 
   -- Setup proxies
-  local foo = p:proxy(my_foo) -- default = 'main' namespace
-  -- Proxy in 'uniforms' namespace
-  local bar = p:proxy(my_bar, {namespace = 'uniforms'})
+  local foo = p:proxy(my_foo) -- default = 'main' name
+  -- Proxy in 'uniforms' name
+  local bar = p:proxy(my_bar, {name = 'uniforms'})
 
   -- Now we can write values inside 'foo' or 'bar' variables and these will be
   -- reflected inside 'p'.
@@ -48,44 +69,59 @@ function should.writeToProxyAndSave()
   assertEqual([[
 ---
 mappings: {}
-preset: 1
+preset: p1
 presets: {}
 ]], p:dump())
 
   -- Current preset position
-  assertEqual(1, p.preset)
+  assertEqual('p1', p.preset)
 
   -- Save preset (= write to p memory and dump to file)
-  p:savePreset()
-
-  -- Copy to preset 2
-  p:copyToPreset(2)
-
-  foo.one = 2
-
-  -- Save preset (writes to file system)
   assertFalse(lub.exist(fpath))
   p:savePreset()
   assertTrue(lub.exist(fpath))
 
-  -- Load preset 1
-  p:selectPreset(1)
+  -- Copy to preset p2
+  p:copyToPreset(2)
+
+  foo.one = 2
+  assertEqual(2, my_foo.one)
+
+  -- Save preset (writes to file system)
+  p:savePreset()
 
   -- Save 
   assertEqual([[
+---
+mappings: {}
+preset: p2
 presets:
-  1:
+  p1:
     main:
-      one: 1.0
-    uniforms
-      one: 10.0
-  2:
-    main
-      one: 2.0
-    uniforms
-      one: 10.0
-  ]], p:dump())
+      one: 1
+    uniforms:
+      one: 10
+  p2:
+    main:
+      one: 2
+    uniforms:
+      one: 10
+]], p:dump())
 
+  -- Load preset 1
+  p:selectPreset(1)
+
+  assertEqual(1, my_foo.one)
+
+end
+
+function should.loadFromFile()
+  makePresetFile()
+  local p = lub.Param() -- Loads content from preset file
+  assertEqual('p2', p.preset)
+  local my_foo = {}
+  local foo = p:proxy(my_foo) -- detects existing 'main' values and sets them
+  assertEqual(0.9, my_foo.speed)
 end
 
 function should.mapMidi()
@@ -93,7 +129,7 @@ function should.mapMidi()
   -- some table that we want to proxy
   local my_foo = {}
   -- Setup proxies
-  local foo = p:proxy(my_foo, {namespace = 'bok'}) -- default = {namespace = 'main', min = 0, max = 1}
+  local foo = p:proxy(my_foo, {name = 'bok'}) -- default = {name = 'main', min = 0, max = 1}
 
   local mcontrol = p:addController('mi', {min = 0, max = 127})
 
