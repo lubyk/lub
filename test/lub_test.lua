@@ -36,6 +36,15 @@ function should.deepMerge()
   assertValueEqual({a = { b = {x=3}, c = {d = 4, e = 5}, g = 2}}, base)
 end
 
+function should.deepMergeNumericKeys()
+  local base = {a = { [1] = {x=1}, [4] = {d = 4}}}
+  local a2   = { [1] = {x=3}, [4] = {e = 5}, [5] = 2}
+  assertFalse(lub.deepMerge(base, 'a', {[4] = {d = 4}}))
+  assertTrue(lub.deepMerge(base, 'a', a2))
+  assertValueEqual({a = { [1] = {x=3}, [4] = {d = 4, e = 5}, [5] = 2}}, base)
+end
+
+
 function should.search()
   local data = {xml = 'document',
     'blah blah',

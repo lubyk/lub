@@ -199,6 +199,10 @@ end
 -- original tables. Values not defined in the preset are not removed and will be
 -- saved with preset.
 function lib:selectPreset(preset_name)
+  if not preset_name then
+    print('Cannot use nil as preset name !')
+    return
+  end
   if type(preset_name) == 'number' then
     preset_name = 'p'..preset_name
   end
@@ -309,8 +313,6 @@ function private:loadpath(filepath)
     for proxy_name, proxy_mappings in pairs(self.mappings) do
       for key, mappings in pairs(proxy_mappings) do
         for ctrl_name, ctrl_key in pairs(mappings) do
-          local rmap = {}
-          self.rmappings[ctrl_name] = rmap
           -- rmappings.mi = {[44] = {proxy_name = 'main', key = 'one'}}
           lub.deepMerge(rmappings, ctrl_name, {
             [ctrl_key] = {
