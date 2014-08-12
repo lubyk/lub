@@ -64,6 +64,15 @@ function should.writeToProxyAndSave()
   assertEqual(1, foo.one)
   assertEqual(10, my_bar.one)
   assertEqual(10, bar.one)
+end
+
+function should.saveToFile()
+  local p = lub.Param()
+  local foo = p:proxy({})
+  local bar = p:proxy({}, {name = 'uniforms'})
+
+  foo.speed  = 0.3
+  bar.length = 0.2
 
   -- Serialize without saving current preset
   assertEqual([[
@@ -81,13 +90,33 @@ presets: {}
   p:savePreset()
   assertTrue(lub.exist(fpath))
 
-  -- Copy to preset p2
-  p:copyToPreset(2)
+  -- Save 
+  assertEqual([[
+---
+mappings: {}
+preset: p1
+presets:
+  p1:
+    main:
+      speed: 0.3
+    uniforms:
+      length: 0.2
+]], lub.content(fpath))
+end
 
-  foo.one = 2
-  assertEqual(2, my_foo.one)
+function should.saveAllPresetsToFile()
+  local p = lub.Param()
+  local foo = p:proxy({})
+  local bar = p:proxy({}, {name = 'uniforms'})
 
-  -- Save preset (writes to file system)
+  foo.speed  = 0.3
+  bar.length = 0.2
+
+  p:savePreset()
+  p:selectPreset(2)
+
+  foo.speed = 0.4
+  foo.hop   = 0.8
   p:savePreset()
 
   -- Save 
@@ -98,21 +127,16 @@ preset: p2
 presets:
   p1:
     main:
-      one: 1
+      speed: 0.3
     uniforms:
-      one: 10
+      length: 0.2
   p2:
     main:
-      one: 2
+      hop: 0.8
+      speed: 0.4
     uniforms:
-      one: 10
-]], p:dump())
-
-  -- Load preset 1
-  p:selectPreset(1)
-
-  assertEqual(1, my_foo.one)
-
+      length: 0.2
+]], lub.content(fpath))
 end
 
 function should.loadFromFile()
@@ -122,9 +146,11 @@ function should.loadFromFile()
   local my_foo = {}
   local foo = p:proxy(my_foo) -- detects existing 'main' values and sets them
   assertEqual(0.9, my_foo.speed)
+  p:selectPreset(1)
+  assertEqual(0.4, my_foo.speed)
 end
 
-function should.mapMidi()
+function should.mapController()
   local p = lub.Param() -- Use default param file name = lub.path '|Param_test.yml'
   -- some table that we want to proxy
   local my_foo = {}
