@@ -35,10 +35,19 @@ local private = {}
 -- is not provided, the default is to use the current script name with ".yml"
 -- extension. For example "foo.lua" parameters would be saved to "foo.lua.yml".
 function lib.new(filepath)
+  if not filepath then
+    filepath = lub.path('&', 3)
+    if not filepath then
+      -- This can happen with tail call optimization
+      filepath = lub.path('&', 4)
+    end
+    filepath = filepath..'.yml'
+  end
+
   local self  = {
     preset    = 'p1',
     presets   = {},
-    filepath  = filepath or lub.path('&', 3)..'.yml',
+    filepath  = filepath,
     proxies   = {},
     controls  = {},
     mappings  = {},

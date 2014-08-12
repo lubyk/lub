@@ -201,31 +201,22 @@ function should.feedbackToController()
   makePresetFile()
   local p = lub.Param()
   local mcontrol = p:addController('mi', {min = 0, max = 127})
-  local foo = p:proxy({})
+  local my_foo = {}
+  local foo = p:proxy(my_foo)
 
-  mcontrol:learn()
-  foo.hello = 0.5
-  mcontrol(32, 127) -- Now key 32 is linked to 'hello' param and mappings are saved.
-  assertEqual(1.0, foo.hello)
-
-
-  local p2 = lub.Param() -- Use default param file name = lub.path '|Param_test.yml'
-  local my_foo2 = {}
-  local foo2 = p2:proxy(my_foo2)
-  local mcontrol2 = p2:addController('mi', {min = 0, max = 127})
   local t
-  function mcontrol2:changed(key, value)
+  function mcontrol:changed(key, value)
     t = {key = key, value = value}
   end
 
-  foo2.hello = 0.9
+  foo.speed = 0.8
   assertValueEqual({
     key   = 32,
-    value = 0.9 * 127,
+    value = 0.8 * 127,
   }, t)
 
-  mcontrol2(32, 60)
-  assertEqual(60/127, my_foo2.hello)
+  mcontrol(32, 60)
+  assertEqual(60/127, my_foo.speed)
 end
 
 should:test()
