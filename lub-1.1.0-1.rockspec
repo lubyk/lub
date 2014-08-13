@@ -7,14 +7,16 @@ source = {
 description = {
   summary = "Lubyk base module.",
   detailed = [[
-      lub: helper code, class declaration.
+    lub: helper code, class declaration.
 
-      lub.Autoload: autoloading classes in modules.
+    lub.Autoload: autoloading classes in modules.
 
-      lub.Dir: a simple directory traversal class.
+    lub.Dir: a simple directory traversal class.
 
-      lub.Template: a simple templating class that uses {{moustache}} like syntax.
-    ]],
+    lub.Template: a simple templating class that uses {{moustache}} like syntax.
+
+    lub.Param: script parameter save/restore.
+  ]],
   homepage = "http://doc.lubyk.org/lub.html",
   license = "MIT"
 }
@@ -34,5 +36,4 @@ build = {
     ['lub.Template'   ] = 'lub/Template.lua',
   },
 }
-
 

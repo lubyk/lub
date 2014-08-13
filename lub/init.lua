@@ -48,6 +48,31 @@ lib.DEPENDS = { -- doc
   "luafilesystem >= 1.4.0",
 }
 
+-- Basic description for luarocks.
+lib.DESCRIPTION = {
+  summary = "Lubyk base module.",
+  detailed = [[
+    lub: helper code, class declaration.
+
+    lub.Autoload: autoloading classes in modules.
+
+    lub.Dir: a simple directory traversal class.
+
+    lub.Template: a simple templating class that uses {{moustache}} like syntax.
+
+    lub.Param: script parameter save/restore.
+  ]],
+  homepage = "http://doc.lubyk.org/lub.html",
+  author   = "Gaspard Bucher",
+  license  = "MIT",
+}
+
+-- Build settings for lut.Builder
+lib.BUILD = {
+  github   = "lubyk",
+  pure_lua = true,
+}
+
 local SYSTINFO
 
 -- # Environment information
