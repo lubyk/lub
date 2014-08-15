@@ -62,10 +62,25 @@ function lib:run(env)
     buffer_ = buffer_ .. indent .. string.gsub(str, '\n', indent)
   end
   setmetatable(env, {__index = _G})
-  local ok, err = pcall(function() self.func(env) end)
+  local ok, err = xpcall(function() self.func(env) end, debug.traceback)
   if not ok then
-    print(self.lua)
-    assert(false, err)
+    local _, line
+    _, _, line = string.find(err, ":(%d+): in function 'func'")
+    line = line * 1
+    err = lub.split(err, '\n')[1]
+    print(err)
+    print('-------------------------------------')
+    print('Error: ', err)
+    local lines = lub.split(self.lua, '\n')
+    for l = line-6, line+6 do
+      if l == line then
+        print(lines[l], '<================')
+      else
+        print(lines[l])
+      end
+    end
+    
+    error(lines[line])
   end
   return buffer_
 end

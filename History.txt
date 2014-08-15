@@ -2,6 +2,7 @@
 
   * Adding lub.Param class to save/restore script parameters and map controllers.
   * Using lut.Builder to generate build files.
+  * Improved lub.Template error reporting.
 
 == 1.0.7 2014-06-24
 

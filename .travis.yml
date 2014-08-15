@@ -34,7 +34,7 @@ install:
   - sudo make install  
   - cd ..
   # Install testing dependency
-  - sudo luarocks-$LUA_VERSION install lut
+  - sudo luarocks-$LUA_VERSION install lut yaml
   # Build module
   - sudo luarocks-$LUA_VERSION make
 

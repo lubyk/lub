@@ -1,7 +1,7 @@
 --
 -- Update build files for this project
 --
-local lub = require 'lub'
 local lut = require 'lut'
+local lib = require 'lub'
 
-lut.Builder(lub):make()
+lut.Builder(lib):make()
