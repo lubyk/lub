@@ -3,6 +3,7 @@
   # lub.Dir test
 
 --]]------------------------------------------------------
+package.path = './?/init.lua;'..package.path
 local lub    = require 'lub'
 local lut    = require 'lut'
 local should = lut.Test 'lub.Dir'
