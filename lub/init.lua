@@ -39,11 +39,11 @@ local lib = {}
 --
 
 -- Current version respecting [semantic versioning](http://semver.org).
-lib.VERSION = '1.1.0'
+lib.VERSION = '1.1.1'
 
 lib.DEPENDS = { -- doc
-  -- Compatible with Lua 5.1, 5.2 and LuaJIT
-  "lua >= 5.1, < 5.3",
+  -- Compatible with Lua 5.1 to 5.3 and LuaJIT
+  "lua >= 5.1, < 5.4",
   -- Uses [Lua Filesystem](http://keplerproject.github.io/luafilesystem/)
   "luafilesystem >= 1.4.0",
 }

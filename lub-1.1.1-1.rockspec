@@ -1,8 +1,9 @@
 package = "lub"
-version = "1.1.0-1"
+version = "1.1.1-1"
 source = {
-  url = 'https://github.com/lubyk/lub/archive/REL-1.1.0.tar.gz',
-  dir = 'lub-REL-1.1.0',
+  url = 'git://github.com/lubyk/lub',
+  tag = 'REL-1.1.1',
+  dir = 'lub',
 }
 description = {
   summary = "Lubyk base module.",
@@ -22,7 +23,7 @@ description = {
 }
 
 dependencies = {
-  "lua >= 5.1, < 5.3",
+  "lua >= 5.1, < 5.4",
   "luafilesystem >= 1.4.0",
 }
 build = {
