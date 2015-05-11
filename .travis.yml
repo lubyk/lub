@@ -26,8 +26,10 @@ branches:
     - master
 
 install:
-  - sudo apt-get install lua$LUA_VERSION liblua$LUA_VERSION-dev
+  - test "$LUA" = "lua5.3" || sudo apt-get install lua$LUA_VERSION liblua$LUA_VERSION-dev
   - test "$LUA" = "luajit" && git clone http://luajit.org/git/luajit-2.0.git && cd luajit-2.0/ && sudo make install && cd .. || true
+  - test "$LUA" = "lua5.3" && wget http://www.lua.org/ftp/lua-5.3.0.tar.gz && tar xzf lua-5.3.0.tar.gz && cd lua-5.3.0 && 
+ make linux && sudo make install && cd .. || true
   - git clone git://github.com/keplerproject/luarocks.git
   - cd luarocks
   - ./configure --lua-version=$LUA_VERSION --versioned-rocks-dir
