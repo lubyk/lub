@@ -1,4 +1,4 @@
-== 1.1.1
+== 1.1.1 2015-05-11
 
   * Adding lub.Param class to save/restore script parameters and map controllers.
   * Using lut.Builder to generate build files.
