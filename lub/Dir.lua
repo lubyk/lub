@@ -11,7 +11,7 @@ local lfs = require 'lfs'
 local match,        create,           resume,           yield,           huge =
       string.match, coroutine.create, coroutine.resume, coroutine.yield, math.huge
 
-local lib = lub.class('lk.Dir', {
+local lib = lub.class('lub.Dir', {
   sep = '/',
   ignore_pattern = '^[.]'
 })
@@ -83,11 +83,11 @@ end
 -- Return an iterator over the paths in the directory. The returned values are
 -- paths, not just filenames.
 --
---   for file in lk.Dir('lib'):list() do
+--   for file in lub.Dir('lib'):list() do
 --     print(file)
 --   end
---   --> lib/lk
---   --> lib/lk.lua
+--   --> lib/foo
+--   --> lib/foo.lua
 function lib:list()
   local co = create(list_files)
   return function()
