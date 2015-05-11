@@ -741,8 +741,9 @@ end
 --
 --   os.execute(string.format('latex %s', lub.shellQuote(filepath)))
 function lib.shellQuote(str)
-  str = gsub(str, '\\', '\\\\')
-  return '"' .. gsub(str, '"', '\\"') .. '"'
+  return '"' .. gsub(str, '[\\%$"]', function(x)
+    return '\\' .. x
+  end) .. '"'
 end
 
 function private.makePathPart(path, fullpath)

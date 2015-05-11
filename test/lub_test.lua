@@ -305,6 +305,8 @@ function should.shellQuote()
   assertEqual('"foo 25\\\""', lub.shellQuote('foo 25"'))
   -- foo 25\" --> "foo 25\\\""
   assertEqual('"foo 25\\\\\\\""', lub.shellQuote('foo 25\\"'))
+  -- foo 25$ --> "foo 25\\$"
+  assertEqual('"foo 25\\$"', lub.shellQuote('foo 25$'))
 end
 
 function should.log()
