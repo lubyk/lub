@@ -3,7 +3,7 @@ lub [![Build Status](https://travis-ci.org/lubyk/lub.png)](https://travis-ci.org
 
 Lubyk core library (provides autoloading, helpers).
 
-[Documentation](http://doc.lubyk.org/lub.html).
+[Documentation](https://lubyk.github.io/lubyk/lub.html).
 
 install
 -------
