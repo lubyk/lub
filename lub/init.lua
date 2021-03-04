@@ -84,7 +84,7 @@ local SYSTINFO
 --
 function lib.plat()
   if not SYSTINFO then
-    local cfg = require 'luarocks.cfg'
+    local cfg = require 'luarocks.core.cfg'
     local ok, system = pcall(function()
       return io.popen("uname -s"):read("*l")
     end)
